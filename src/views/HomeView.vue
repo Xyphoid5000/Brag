@@ -13,7 +13,7 @@
             <a class="button button--quiet" href="#services">Explore services <span>↓</span></a>
           </div>
         </div>
-        <div class="hero-panel__signal"><span class="signal-dot"></span><span>Ready when the road calls</span></div>
+        <div class="hero-panel__signal"><span class="signal-dot"></span><span>Ready when the road calls</span><button class="replay-button" type="button" @click="replayImpact">Replay impact</button></div>
       </section>
 
       <section id="services" class="content-band">
@@ -28,12 +28,12 @@
       <section id="why-us" class="proof-band">
         <p class="eyebrow"><span></span> Built around your day</p>
         <div><h2>Good glass work should disappear.</h2><p>Except for the peace of mind it leaves behind. Local hands, honest answers, and a clean finish every time.</p></div>
-        <div class="proof-band__stat"><strong>25+</strong><span>years on the road</span></div>
+        <div class="proof-band__stat"><strong>Local</strong><span>service that comes to you</span></div>
       </section>
 
       <section id="contact" class="contact-band contact-band--home">
         <div class="contact-band__intro"><p class="eyebrow"><span></span> Let's get you moving</p><h2>Bring us the damage.<br>We'll bring the fix.</h2><p class="contact-band__copy">Ready for a clearer view? Tell us what happened and we'll help with the next step.</p></div>
-        <RouterLink class="button button--orange" to="/contact">Get a free quote <span>-></span></RouterLink>
+        <div class="home-contact__actions"><RouterLink class="button button--orange" to="/contact">Get a free quote <span>-></span></RouterLink><SocialLinks /></div>
       </section>
     </main>
     <footer class="landing-footer"><span>Burning River Auto Glass</span><span>Serving Cleveland and Northeast Ohio</span></footer>
@@ -43,4 +43,10 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import SiteHeader from '../components/SiteHeader.vue'
+import SocialLinks from '../components/SocialLinks.vue'
+
+function replayImpact() {
+  sessionStorage.removeItem('brag-glass-impact-played')
+  window.location.reload()
+}
 </script>
