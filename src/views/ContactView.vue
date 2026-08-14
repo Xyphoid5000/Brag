@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import BurningRiverAutoGlassWordmark from '../components/BurningRiverAutoGlassWordmark.vue'
-import SiteHeader from '../components/SiteHeader.vue'
 import SocialLinks from '../components/SocialLinks.vue'
 
 const formStatus = ref('')
@@ -24,7 +23,6 @@ function submitContactForm(event: SubmitEvent) {
 
 <template>
   <div class="landing-page contact-page">
-    <SiteHeader />
     <main class="contact-page__main">
       <div class="contact-page__logo"><BurningRiverAutoGlassWordmark /></div>
       <div class="contact-page__heading">

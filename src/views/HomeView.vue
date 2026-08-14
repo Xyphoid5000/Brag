@@ -1,7 +1,6 @@
 <template>
   <div class="landing-page home-page">
-    <SiteHeader />
-
+    
     <main id="top">
       <section class="hero-panel">
         <div class="hero-panel__copy">
@@ -42,7 +41,6 @@
 
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
-import SiteHeader from '../components/SiteHeader.vue'
 import SocialLinks from '../components/SocialLinks.vue'
 
 function replayImpact() {

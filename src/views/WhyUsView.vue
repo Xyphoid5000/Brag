@@ -1,6 +1,5 @@
 <template>
   <div class="landing-page detail-page">
-    <SiteHeader />
     <main class="detail-page__main">
       <section class="detail-hero detail-hero--why">
         <div><p class="eyebrow"><span></span> The Burning River difference</p><h1>Back on the road, safely and swiftly.</h1><p>We are rooted in North East Ohio and committed to personalized service, honest answers, and glass work that leaves your vehicle ready for the drive ahead.</p></div>
@@ -23,5 +22,4 @@
 
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
-import SiteHeader from '../components/SiteHeader.vue'
 </script>

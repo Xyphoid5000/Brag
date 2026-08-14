@@ -1,6 +1,5 @@
 <template>
   <div class="landing-page gallery-page">
-    <SiteHeader />
     <main class="gallery-page__main">
       <section class="gallery-intro">
         <div>
@@ -50,5 +49,4 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import BeforeAfterCard from '../components/BeforeAfterCard.vue'
-import SiteHeader from '../components/SiteHeader.vue'
 </script>

@@ -1,6 +1,5 @@
 <template>
   <div class="landing-page detail-page">
-    <SiteHeader />
     <main class="detail-page__main">
       <section class="detail-hero">
         <div><p class="eyebrow"><span></span> Mobile glass service</p><h1>Your small-town glass experts.</h1><p>Quality service should come to you. Burning River Auto Glass handles repairs and replacements at your location across North East Ohio.</p></div>
@@ -19,5 +18,4 @@
 
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
-import SiteHeader from '../components/SiteHeader.vue'
 </script>

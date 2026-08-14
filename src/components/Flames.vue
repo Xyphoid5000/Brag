@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import logoUrl from '../assets/BREmblemNoBackground.png'
+import logoUrl from '../assets/Sparks.png'
 </script>
 
 <template>
