@@ -1,33 +1,33 @@
 <template>
   <header class="landing-nav">
-    <RouterLink class="landing-brand" to="/" aria-label="Burning River Auto Glass home">
+    <RouterLink class="landing-brand" to="/" aria-label="Burning River Auto Glass home" @click="menuOpen = false">
       <span class="landing-brand__mark"><BurningRiverFadedEmblem /></span>
       <span class="landing-brand__text"><BurningRiverAutoGlassWordmark /></span>
     </RouterLink>
-    <nav ref="navRef" class="landing-nav__links" aria-label="Primary navigation">
-      <RouterLink to="/">Home</RouterLink>
-      <RouterLink to="/services">Services</RouterLink>
-      <RouterLink to="/why-us">Why us</RouterLink>
-      <RouterLink to="/gallery">Gallery</RouterLink>
-      <RouterLink to="/contact">Contact</RouterLink>
-      <div ref="underlineRef" class="underline"></div>
-    </nav>
-    <button class="landing-nav__menu-button" type="button" aria-label="Toggle menu" @click="menuOpen = !menuOpen">
-      <span class="landing-nav__menu-toggle-bar"></span>
-      <span class="landing-nav__menu-toggle-bar"></span>
-      <span class="landing-nav__menu-toggle-bar"></span>
-    </button>
-    <nav class="landing-nav__mobile" :class="{ 'landing-nav__menu--open': menuOpen }" aria-label="Mobile navigation">
-      <RouterLink to="/" @click="menuOpen = false">Home</RouterLink>
-      <RouterLink to="/services" @click="menuOpen = false">Services</RouterLink>
-      <RouterLink to="/why-us" @click="menuOpen = false">Why us</RouterLink>
-      <RouterLink to="/gallery" @click="menuOpen = false">Gallery</RouterLink>
-      <RouterLink to="/contact" @click="menuOpen = false">Contact</RouterLink>
-    </nav>
-    <div class="landing-extras" style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
-    <a class="landing-nav__phone" href="tel:3303481455"><span>24/7</span> (330) 348-1455</a>
-    <button style="height: 2rem;" class="replay-button" type="button" @click="replayImpact">Replay impact</button>
-    </div>
+    <template v-if="uiStore.isMobile">
+      <HamburgerButton v-model="menuOpen"/>
+      <nav class="landing-nav__mobile" v-if="menuOpen" :class="{ 'landing-nav__menu--open': menuOpen }" aria-label="Mobile navigation">
+        <RouterLink to="/" @click="menuOpen = false">Home</RouterLink>
+        <RouterLink to="/services" @click="menuOpen = false">Services</RouterLink>
+        <RouterLink to="/why-us" @click="menuOpen = false">Why us</RouterLink>
+        <RouterLink to="/gallery" @click="menuOpen = false">Gallery</RouterLink>
+        <RouterLink to="/contact" @click="menuOpen = false">Contact</RouterLink>
+      </nav>
+    </template>
+    <template v-else>
+      <nav ref="navRef" class="landing-nav__links" aria-label="Primary navigation">
+        <RouterLink to="/">Home</RouterLink>
+        <RouterLink to="/services">Services</RouterLink>
+        <RouterLink to="/why-us">Why us</RouterLink>
+        <RouterLink to="/gallery">Gallery</RouterLink>
+        <RouterLink to="/contact">Contact</RouterLink>
+        <div ref="underlineRef" class="underline"></div>
+      </nav>
+      <div class="landing-extras" style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
+        <a class="landing-nav__phone" href="tel:3303481455"><span>24/7</span> (330) 348-1455</a>
+        <button style="height: 2rem;" class="replay-button" type="button" @click="replayImpact">Replay impact</button>
+      </div>
+    </template>  
   </header>
 </template>
 
@@ -38,6 +38,7 @@ import BurningRiverFadedEmblem from './BurningRiverFadedEmblem.vue'
 import BurningRiverAutoGlassWordmark from './BurningRiverAutoGlassWordmark.vue'
 import { ref, nextTick, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
+import HamburgerButton from './HamburgerButton.vue'
 import gsap from "gsap";
 
 const uiStore = useUIStore();
