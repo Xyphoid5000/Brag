@@ -33,11 +33,14 @@
 
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
+import { useUIStore } from '../stores/uiStore'
 import BurningRiverFadedEmblem from './BurningRiverFadedEmblem.vue'
 import BurningRiverAutoGlassWordmark from './BurningRiverAutoGlassWordmark.vue'
 import { ref, nextTick, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import gsap from "gsap";
+
+const uiStore = useUIStore();
 
 const route = useRoute();
 
@@ -77,12 +80,11 @@ watch(
 const menuOpen = ref(false);
 
 function replayImpact() {
-  sessionStorage.removeItem('brag-glass-impact-played')
+  uiStore.animationPlayed = false;
   window.scrollTo({
     top: 0,
     behavior: "smooth"
   });
-  window.location.reload()
 }
 
 </script>
