@@ -12,7 +12,7 @@
             <a class="button button--quiet" href="#services">Explore services <span>↓</span></a>
           </div>
         </div>
-        <div class="hero-panel__signal"><span class="signal-dot"></span><span>Ready when the road calls</span><button class="replay-button" type="button" @click="replayImpact">Replay impact</button></div>
+        <div class="hero-panel__signal"><span class="signal-dot"></span><span>Ready when the road calls</span></div>
       </section>
 
       <section id="services" class="content-band">
@@ -43,8 +43,4 @@
 import { RouterLink } from 'vue-router'
 import SocialLinks from '../components/SocialLinks.vue'
 
-function replayImpact() {
-  sessionStorage.removeItem('brag-glass-impact-played')
-  window.location.reload()
-}
 </script>

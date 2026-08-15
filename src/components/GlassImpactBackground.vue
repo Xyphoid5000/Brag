@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { gsap } from 'gsap'
+import { Flip } from 'gsap/Flip'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-//import { Flip } from 'gsap/Flip'
 import BurningRiverAutoGlassWordmark from './BurningRiverAutoGlassWordmark.vue'
 import BurningRiverEmblem from './BurningRiverEmblem.vue'
 import Flames from './Flames.vue'
 import Splash from './Splash.vue'
 import BurningRiverFadedEmblem from './BurningRiverFadedEmblem.vue'
 
-
-gsap.registerPlugin(ScrollTrigger)
+gsap.registerPlugin(ScrollTrigger, Flip)
 
 const emit = defineEmits<{
   ready: []
@@ -23,20 +22,33 @@ const shards = ref<Shard[]>([])
 const smallShards = ref<Shard[]>([])
 const impactComplete = ref(false)
 
-function buildShards() {
-  const sectors = 14
-  const rings = 5
-  const center = { x: 50, y: 45 }
-  const halfWidth = 38
-  const halfHeight = 30
-  const angleStep = (Math.PI * 2) / sectors
-  const ringFractions = [0, 0.18, 0.4, 0.64, 0.83, 1]
+let restoreTrigger: ScrollTrigger | null = null
+let introTimeline: gsap.core.Timeline | null = null
+let flamePulse: gsap.core.Timeline | null = null
 
-  const edgeRadius = (angle: number) => {
-    const horizontal = Math.abs(Math.cos(angle))
-    const vertical = Math.abs(Math.sin(angle))
-    return Math.min(halfWidth / horizontal || Infinity, halfHeight / vertical || Infinity)
-  }
+const IMPACT_X = 50
+const IMPACT_Y = 44
+
+function edgeRadius(angle: number) {
+  const dx = Math.cos(angle)
+  const dy = Math.sin(angle)
+  const horizontal = Math.abs(dx)
+  const vertical = Math.abs(dy)
+
+  const distanceToVerticalEdge = horizontal > 0.0001 ? 50 / horizontal : Infinity
+  const distanceToHorizontalEdge = vertical > 0.0001
+    ? (dy < 0 ? IMPACT_Y : 100 - IMPACT_Y) / vertical
+    : Infinity
+
+  return Math.min(distanceToVerticalEdge, distanceToHorizontalEdge)
+}
+
+function buildShards() {
+  // The pane now fills the entire 100 x 100 SVG, so the fracture field does too.
+  const sectors = 16
+  const rings = 6
+  const angleStep = (Math.PI * 2) / sectors
+  const ringFractions = [0, 0.14, 0.29, 0.48, 0.67, 0.84, 1]
 
   const vertices = Array.from({ length: (rings + 1) * sectors }, (_, index) => {
     const sector = index % sectors
@@ -47,8 +59,8 @@ function buildShards() {
     const distance = radius * (ringFractions[ring] + ringJitter)
 
     return {
-      x: center.x + Math.cos(angle) * distance,
-      y: center.y + Math.sin(angle) * distance,
+      x: IMPACT_X + Math.cos(angle) * distance,
+      y: IMPACT_Y + Math.sin(angle) * distance,
     }
   })
 
@@ -66,21 +78,24 @@ function buildShards() {
       `${currentOuter.x},${currentOuter.y}`,
     ].join(' ')
 
+    const angle = -Math.PI / 2 + (sector + 0.5) * angleStep
+    const travel = 10 + ring * 3.8
+
     return {
       points,
-      x: (Math.cos(-Math.PI / 2 + (sector + 0.5) * angleStep) * (12 + (ring * 3))) + (index % 2 ? 8 : -8),
-      y: (Math.sin(-Math.PI / 2 + (sector + 0.5) * angleStep) * (12 + (ring * 3))) + (ring % 2 ? 7 : -7),
+      x: Math.cos(angle) * travel + (index % 2 ? 1.8 : -1.8),
+      y: Math.sin(angle) * travel + (ring % 2 ? 1.5 : -1.5),
       rotation: (index % 2 ? 1 : -1) * (18 + ((index * 13) % 48)),
-      delay: (index % 10) * 0.006,
+      delay: (index % 12) * 0.006,
     }
   })
 
-  smallShards.value = Array.from({ length: 42 }, (_, index) => {
-    const angle = -Math.PI / 2 + (index / 42) * Math.PI * 2 + ((index % 3) - 1) * 0.04
-    const radius = edgeRadius(angle) * (0.72 + (index % 6) * 0.035)
-    const size = 0.9 + (index % 4) * 0.28
-    const x = center.x + Math.cos(angle) * radius
-    const y = center.y + Math.sin(angle) * radius
+  smallShards.value = Array.from({ length: 72 }, (_, index) => {
+    const angle = -Math.PI / 2 + (index / 72) * Math.PI * 2 + ((index % 3) - 1) * 0.035
+    const radius = edgeRadius(angle) * (0.72 + (index % 7) * 0.035)
+    const size = 0.7 + (index % 4) * 0.24
+    const x = IMPACT_X + Math.cos(angle) * radius
+    const y = IMPACT_Y + Math.sin(angle) * radius
     const points = [
       `${x},${y}`,
       `${x + Math.cos(angle + 0.9) * size},${y + Math.sin(angle + 0.9) * size}`,
@@ -89,104 +104,360 @@ function buildShards() {
 
     return {
       points,
-      x: Math.cos(angle) * (18 + (index % 7) * 3),
-      y: Math.sin(angle) * (18 + (index % 7) * 3),
+      x: Math.cos(angle) * (16 + (index % 8) * 2.8),
+      y: Math.sin(angle) * (16 + (index % 8) * 2.8),
       rotation: (index % 2 ? 1 : -1) * (28 + ((index * 17) % 55)),
-      delay: 0.04 + (index % 9) * 0.01,
+      delay: 0.04 + (index % 9) * 0.008,
     }
   })
 }
 
-function animateImpact() {
+function getHeaderTargets() {
+  return {
+    mark: document.querySelector<HTMLElement>('.landing-brand__mark'),
+    text: document.querySelector<HTMLElement>('.landing-brand__text'),
+    header: document.querySelector<HTMLElement>('.landing-nav'),
+    shell: document.querySelector<HTMLElement>('.site-shell'),
+  }
+}
+
+function startFlameAnimation(flame: HTMLElement) {
+  flamePulse?.kill()
+  gsap.set(flame, { transformOrigin: '50% 75%' })
+
+  flamePulse = gsap.timeline({ repeat: -1, yoyo: true })
+    .to(flame, {
+      scaleX: 1.025,
+      scaleY: 1.045,
+      x: 1.5,
+      rotation: 0.8,
+      duration: 0.15,
+      ease: 'sine.inOut',
+    })
+    .to(flame, {
+      scaleX: 0.985,
+      scaleY: 0.975,
+      x: -1,
+      rotation: -0.6,
+      duration: 0.12,
+      ease: 'sine.inOut',
+    })
+}
+
+function positionImpactEffects() {
+  if (!scene.value) return
+
+  const effects = scene.value.querySelectorAll<HTMLElement>('.impact-sparks, .impact-spash')
+  effects.forEach((effect) => {
+    gsap.set(effect, {
+      left: `${IMPACT_X}%`,
+      top: `${IMPACT_Y}%`,
+      xPercent: -50,
+      yPercent: -50,
+    })
+  })
+}
+
+function playImpactEffects(
+  splash: HTMLElement,
+  sparks: HTMLElement,
+) {
+  const effects = gsap.timeline()
+
+  effects
+    .set([sparks, splash], {
+      opacity: 0,
+      scale: 0.35,
+      rotation: 0,
+      xPercent: -50,
+      yPercent: -50,
+    })
+    .set(sparks, {
+      scale: 0.72,
+    })
+    .to(splash, {
+      opacity: 1,
+      scale: 1.04,
+      duration: 0.14,
+      ease: 'power4.out',
+    })
+    .to(sparks, {
+      opacity: 1,
+      scale: 1,
+      duration: 0.12,
+      ease: 'power4.out',
+    }, '<0.01')
+    .to(splash, {
+      scale: 1.12,
+      duration: 0.14,
+      ease: 'power2.out',
+    })
+    .to(sparks, {
+      scale: 1.05,
+      x: 2,
+      rotation: 1,
+      duration: 0.14,
+      ease: 'power2.out',
+    }, '<')
+    .to([splash, sparks], {
+      opacity: 0,
+      duration: 0.55,
+      ease: 'power2.out',
+    }, '+=0.05')
+
+  return effects
+}
+
+function runHeaderFlip() {
+  if (!scene.value) return Promise.resolve()
+
+  const { mark: headerMark, text: headerText, header, shell } = getHeaderTargets()
+  const introMark = scene.value.querySelector<HTMLElement>('.intro-normal-logo')
+  const introText = scene.value.querySelector<HTMLElement>('.full-wordmark')
+
+  if (!headerMark || !headerText || !header || !shell || !introMark || !introText) {
+    return Promise.resolve()
+  }
+
+  // The header is mounted from the beginning, but it is visually hidden.
+  // Put its two brand pieces exactly over the intro pieces, capture that state,
+  // then clear the temporary transforms so Flip can animate them to their real layout.
+  gsap.set([headerMark, headerText], { opacity: 1 })
+  Flip.fit(headerMark, introMark, { scale: true })
+  Flip.fit(headerText, introText, { scale: true })
+
+  const state = Flip.getState([headerMark, headerText])
+
+  gsap.set([headerMark, headerText], { clearProps: 'transform,width,height' })
+
+  shell.classList.add('site-shell--flipping')
+  gsap.set(shell, { opacity: 1 })
+  gsap.set(header, { opacity: 1 })
+
+  return new Promise<void>((resolve) => {
+    Flip.from(state, {
+      duration: 1.55,
+      ease: 'power3.inOut',
+      absolute: false,
+      onComplete: () => {
+        gsap.set([introMark, introText], { opacity: 0 })
+        gsap.set([headerMark, headerText], { opacity: 1 })
+        gsap.to(header, {
+          opacity: 1,
+          duration: 0.38,
+          ease: 'power2.out',
+        })
+        gsap.to(shell.querySelector('.site-main'), {
+          opacity: 1,
+          duration: 0.95,
+          delay: 0.18,
+          ease: 'power2.out',
+          onComplete: () => {
+            shell.classList.remove('site-shell--flipping')
+            resolve()
+          },
+        })
+      },
+    })
+  })
+}
+
+async function animateImpact() {
   if (!scene.value) return
 
   const glass = scene.value.querySelector<SVGRectElement>('.glass-pane')
   const logo = scene.value.querySelector<HTMLElement>('.impact-logo')
+  const splash = scene.value.querySelector<HTMLElement>('.impact-spash')
+  const sparks = scene.value.querySelector<HTMLElement>('.impact-sparks')
+  const introNormalLogo = scene.value.querySelector<HTMLElement>('.intro-normal-logo')
+  const fadedLogo = scene.value.querySelector<HTMLElement>('.faded-logo')
+  const fullWordmark = scene.value.querySelector<HTMLElement>('.full-wordmark')
   const largeShardElements = scene.value.querySelectorAll<SVGPolygonElement>('.glass-shard:not(.glass-shard--small)')
   const smallShardElements = scene.value.querySelectorAll<SVGPolygonElement>('.glass-shard--small')
   const allShardElements = scene.value.querySelectorAll<SVGPolygonElement>('.glass-shard')
-  const logoImpactElements = scene.value.querySelectorAll<HTMLElement>('.impact-sparks, .impact-spash')
   const paneLighting = scene.value.querySelectorAll<HTMLElement>('.glass-scene__light-sweep, .glass-scene__reflection, .glass-scene__pane-sheen, .glass-scene__pane-edge')
+  const { shell } = getHeaderTargets()
 
-  const impact = gsap.timeline({
-    onComplete: async () => {
-      sessionStorage.setItem('brag-glass-impact-played', 'true')
-      impactComplete.value = true
-      emit('ready')
-      await nextTick()
-      createRestoreTimeline()
-    },
-  })
+  if (!glass || !logo || !splash || !sparks || !fullWordmark) return
+
+  positionImpactEffects()
 
   gsap.set(logo, { y: -240, scale: 0.82, rotation: -4, opacity: 1 })
   gsap.set(allShardElements, { opacity: 0, strokeOpacity: 0 })
-  gsap.set(logoImpactElements, { y: 0, scale: 0.3, opacity: 0 })
-  impact
-    .to(logo, { y: 0, rotation: 0, scale: 1, duration: 1.0, ease: 'power3.in' })
-    .to(logoImpactElements, {scale: 1.1, opacity: 1, duration: 0.5, ease: 'power2.in'}, '<')
-    .to(logo, { scale: 1.16, duration: 0.08, ease: 'power1.out' })
-    .to(glass, { opacity: 0, scale: 1.05, duration: 0.12, ease: 'power2.out' }, '<')
-    .to(allShardElements, { opacity: 1, strokeOpacity: 1, duration: 0.12, ease: 'power1.in' })
-    .to(logo, { scale: 1, duration: 0.24, ease: 'back.out(2)' })
-    .to(logoImpactElements, {opacity: 0, duration: 1.0, ease: 'power2.out'}, '<0.3')
-    .to(paneLighting, {opacity: 0, scale: 1.05, duration: 0.5, ease: 'power2.out'})
+  gsap.set([splash, sparks], { opacity: 0, scale: 0.3 })
+  gsap.set(fullWordmark, { opacity: 0 })
+  if (introNormalLogo) gsap.set(introNormalLogo, { opacity: 0 })
+  gsap.set(fullWordmark, { y: 22 })
+  if (fadedLogo) gsap.set(fadedLogo, { opacity: 0 })
+  gsap.set(paneLighting, { opacity: 0.78 })
+  if (shell) gsap.set(shell, { opacity: 0 })
+
+  startFlameAnimation(sparks)
+
+  introTimeline = gsap.timeline()
+    // B falls into the exact center of the full-screen pane.
+    .to(logo, {
+      y: 0,
+      rotation: 0,
+      scale: 1,
+      duration: 1.05,
+      ease: 'power3.in',
+    })
+    // The impact frame. Effects start here, not during the fall.
+    .add(() => {
+      playImpactEffects(splash, sparks).play()
+    })
+    .to(logo, {
+      scale: 1.16,
+      duration: 0.075,
+      ease: 'power1.out',
+    })
+    .to(glass, {
+      opacity: 0,
+      scale: 1.035,
+      duration: 0.11,
+      ease: 'power2.out',
+    }, '<')
+    .to(allShardElements, {
+      opacity: 1,
+      strokeOpacity: 1,
+      duration: 0.08,
+      ease: 'power1.in',
+    }, '<')
+    .to(logo, {
+      scale: 1,
+      duration: 0.26,
+      ease: 'back.out(2.2)',
+    })
+    .to(paneLighting, {
+      opacity: 0,
+      scale: 1.04,
+      duration: 0.4,
+      ease: 'power2.out',
+    }, '<')
     .to(largeShardElements, {
       x: (index) => shards.value[index].x,
       y: (index) => shards.value[index].y,
       rotation: (index) => shards.value[index].rotation,
-      opacity: (index) => (index % 7 === 0 ? 0.28 : 0.8),
+      opacity: (index) => (index % 9 === 0 ? 0.28 : 0.8),
       duration: 1.15,
       ease: 'power3.out',
-      stagger: { each: 0.008, from: 'center' },
-    }, '<')
+      stagger: { each: 0.006, from: 'center' },
+    }, '-=0.16')
     .to(smallShardElements, {
       x: (index) => smallShards.value[index].x,
       y: (index) => smallShards.value[index].y,
       rotation: (index) => smallShards.value[index].rotation,
       opacity: 0.9,
-      duration: 0.82,
+      duration: 0.86,
       ease: 'power3.out',
-      stagger: { each: 0.012, from: 'center' },
-    }, '<0.1')
+      stagger: { each: 0.009, from: 'center' },
+    }, '<0.08')
+    // The fire/water version lives only through the first part of the fracture.
+      .to(logo, {
+      opacity: 0,
+      duration: 0.24,
+      ease: 'power2.in',
+    }, '-=0.62')
+    .fromTo(introNormalLogo, {
+      opacity: 0,
+      scale: 0.92,
+    }, {
+      opacity: 1,
+      scale: 1,
+      duration: 0.42,
+      ease: 'power2.out',
+    }, '<0.02')
+    .to(fullWordmark, {
+      opacity: 1,
+      y: 0,
+      duration: 0.65,
+      ease: 'power3.out',
+    }, '-=0.18')
+    // Let the completed lockup breathe before it moves into the header.
+    .to({}, { duration: 1.5 })
+
+  await introTimeline
+  await runHeaderFlip()
+
+  flamePulse?.kill()
+  gsap.set(sparks, { opacity: 0 })
+
+  sessionStorage.setItem('brag-glass-impact-played', 'true')
+  impactComplete.value = true
+  emit('ready')
+  await nextTick()
+  createRestoreTimeline()
 }
 
 function createRestoreTimeline() {
-  if (!scene.value) return
+  if (!scene.value || restoreTrigger) return
 
   const glass = scene.value.querySelector<SVGRectElement>('.glass-pane')
   const shardElements = scene.value.querySelectorAll('.glass-shard')
   const lightSweep = scene.value.querySelector<HTMLElement>('.glass-scene__light-sweep')
   const paneLighting = scene.value.querySelectorAll<HTMLElement>('.glass-scene__reflection, .glass-scene__pane-sheen, .glass-scene__pane-edge')
-  const restore = gsap.timeline({ paused: true })
-  const logos = scene.value.querySelectorAll<HTMLElement>('.impact-logo, .faded-logo, .full-wordmark')
+  const introLogo = scene.value.querySelector<HTMLElement>('.intro-normal-logo')
+  const endLogo = scene.value.querySelector<HTMLElement>('.impact-logo')
+  const endWordmark = scene.value.querySelector<HTMLElement>('.full-wordmark')
 
-  gsap.set(logos, { opacity: 0 })
+  if (!glass || !lightSweep || !endLogo || !endWordmark) return
+
+  const restore = gsap.timeline({ paused: true })
+
+  gsap.set([endLogo, introLogo, endWordmark], { opacity: 0 })
+  gsap.set(endLogo, {y: -55, scale: .7 })
+  gsap.set(endWordmark, {y: -40, scale: .75 })
   gsap.set(lightSweep, { opacity: 0, xPercent: -115 })
   gsap.set(paneLighting, { opacity: 0 })
-  restore.to(shardElements, {
-    x: 0,
-    y: 0,
-    rotation: 0,
-    opacity: 0.76,
-    strokeOpacity: 0,
-    duration: 1,
-    ease: 'power2.inOut',
-    stagger: { each: 0.012, from: 'edges' },
-  })
-  restore.to(shardElements, { opacity: 0, duration: 0.16, ease: 'power1.in' })
-  restore.to(glass, { opacity: 1, scale: 1, duration: 0.16, ease: 'power1.out' }, '<')
 
-  ScrollTrigger.create({
+  restore
+    .to(shardElements, {
+      x: 0,
+      y: 0,
+      rotation: 0,
+      opacity: 0.76,
+      strokeOpacity: 0,
+      duration: 1,
+      ease: 'power2.inOut',
+      stagger: { each: 0.012, from: 'edges' },
+    })
+    .to(shardElements, {
+      opacity: 0,
+      duration: 0.16,
+      ease: 'power1.in',
+    })
+    .to(glass, {
+      opacity: 1,
+      scale: 1,
+      duration: 0.16,
+      ease: 'power1.out',
+    }, '<')
+
+  restoreTrigger = ScrollTrigger.create({
     trigger: document.documentElement,
     start: 'top top',
     end: 'bottom bottom',
     scrub: 1.1,
     onUpdate: (self) => {
-      restore.progress(Math.max(0, Math.min(1, self.progress * 1.18)))
-      scene.value?.classList.toggle('glass-scene--restoring', self.progress > 0.02)
-      gsap.set(lightSweep, { opacity: self.progress > 0.08 ? 0.42 : 0, xPercent: -115 + self.progress * 230 })
-      const paneLightProgress = Math.max(0, Math.min(1, (self.progress - 0.82) * 5.56))
-      gsap.set(paneLighting, { opacity: (index) => [0.65, 0.72, 0.78][index] * paneLightProgress })
+      const progress = self.progress
+      restore.progress(Math.max(0, Math.min(1, progress * 1.18)))
+      scene.value?.classList.toggle('glass-scene--restoring', progress > 0.02)
+
+      gsap.set(lightSweep, {
+        opacity: progress > 0.08 ? 0.42 : 0,
+        xPercent: -115 + progress * 230,
+      })
+
+      const paneLightProgress = Math.max(0, Math.min(1, (progress - 0.82) * 5.56))
+      gsap.set(paneLighting, {
+        opacity: (index) => [0.65, 0.72, 0.78][index] * paneLightProgress,
+      })
+
+      const logoReveal = Math.max(0, Math.min(1, (progress - 0.88) / 0.12))
+      gsap.set([endLogo, endWordmark], {
+        opacity: logoReveal,
+      })
     },
   })
 }
@@ -199,14 +470,16 @@ function showBrokenState() {
   const smallShardElements = scene.value.querySelectorAll<SVGPolygonElement>('.glass-shard--small')
   const lightSweep = scene.value.querySelector<HTMLElement>('.glass-scene__light-sweep')
   const paneLighting = scene.value.querySelectorAll<HTMLElement>('.glass-scene__reflection, .glass-scene__pane-sheen, .glass-scene__pane-edge')
-  const logo = scene.value.querySelectorAll<HTMLElement>('.impact-logo, .impact-sparks, .impact-spash, .faded-logo, .full-wordmark');
+  const logo = scene.value.querySelectorAll<HTMLElement>('.impact-logo, .impact-sparks, .impact-spash, .faded-logo, .end-wordmark, .full-wordmark')
+
+  if (!glass || !lightSweep) return
 
   gsap.set(logo, { opacity: 0 })
-  gsap.set(glass, { opacity: 0, scale: 1.05 })
+  gsap.set(glass, { opacity: 0, scale: 1.035 })
   gsap.set(lightSweep, { opacity: 0, xPercent: -115 })
   gsap.set(paneLighting, { opacity: 0 })
   gsap.set(largeShardElements, {
-    opacity: (index) => (index % 7 === 0 ? 0.28 : 0.8),
+    opacity: (index) => (index % 9 === 0 ? 0.28 : 0.8),
     x: (index) => shards.value[index].x,
     y: (index) => shards.value[index].y,
     rotation: (index) => shards.value[index].rotation,
@@ -223,9 +496,18 @@ function showBrokenState() {
 onMounted(async () => {
   buildShards()
   await nextTick()
+  await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
+
   if (sessionStorage.getItem('brag-glass-impact-played') === 'true') {
     createRestoreTimeline()
     showBrokenState()
+    const { header, shell } = getHeaderTargets()
+    if (shell) gsap.set(shell, { opacity: 1, pointerEvents: 'auto' })
+    if (header) gsap.set(header, { opacity: 1 })
+    const main = shell?.querySelector<HTMLElement>('.site-main')
+    if (main) gsap.set(main, { opacity: 1 })
+    impactComplete.value = true
+    emit('ready')
     return
   }
 
@@ -233,6 +515,10 @@ onMounted(async () => {
 })
 
 onBeforeUnmount(() => {
+  restoreTrigger?.kill()
+  restoreTrigger = null
+  introTimeline?.kill()
+  flamePulse?.kill()
   ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
   gsap.killTweensOf(scene.value)
 })
@@ -241,13 +527,17 @@ onBeforeUnmount(() => {
 <template>
   <div ref="scene" class="glass-scene" :class="{ 'glass-scene--ready': impactComplete }" aria-hidden="true">
     <div class="glass-scene__wash"></div>
+    <div class="glass-scene__under-logo">
+      <div class="faded-logo"><BurningRiverFadedEmblem /></div>
+      <div class="end-wordmark"><BurningRiverAutoGlassWordmark /></div>
+    </div>
     <div class="glass-scene__overlay"></div>
     <div class="glass-scene__light-sweep"></div>
     <div class="glass-scene__reflection"></div>
     <div class="glass-scene__pane-sheen"></div>
     <div class="glass-scene__pane-edge"></div>
     <svg class="glass-scene__svg" viewBox="0 0 100 100" preserveAspectRatio="none">
-      <rect class="glass-pane" x="12" y="15" width="76" height="60" rx="1.5" />
+      <rect class="glass-pane" x="0" y="0" width="100" height="100" rx="0" />
       <polygon
         v-for="(shard, index) in shards"
         :key="index"
@@ -264,7 +554,7 @@ onBeforeUnmount(() => {
       />
     </svg>
     <div class="impact-logo"><BurningRiverEmblem /></div>
-    <!--<div class="faded-logo"><BurningRiverFadedEmblem /></div>-->
+    <div class="intro-normal-logo"><BurningRiverFadedEmblem /></div>
     <div class="impact-sparks"><Flames /></div>
     <div class="impact-spash"><Splash /></div>
     <div class="full-wordmark"><BurningRiverAutoGlassWordmark /></div>
