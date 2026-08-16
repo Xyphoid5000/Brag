@@ -31,7 +31,7 @@ function toggle() {
 
 <style scoped>
 .hamburger {
-  --color: #718d78;
+  --color: #a54819;
 
   width: 52px;
   height: 52px;

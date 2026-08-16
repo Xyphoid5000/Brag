@@ -9,8 +9,10 @@ import Flames from './Flames.vue'
 import Splash from './Splash.vue'
 import BurningRiverFadedEmblem from './BurningRiverFadedEmblem.vue'
 import { useUIStore } from '../stores/uiStore'
+import { useRoute } from 'vue-router'
 
 const uiStore = useUIStore();
+const route = useRoute();
 
 const emit = defineEmits<{
   ready: []
@@ -516,6 +518,18 @@ watch(() => uiStore.animationPlayed,
       await setup();
     }
 })
+
+watch(
+  () => route.fullPath,
+  async () => {
+    await nextTick();
+
+    requestAnimationFrame(() => {
+      ScrollTrigger.refresh(true);
+    });
+  }
+);
+
 
 onMounted(() => {
   setup()

@@ -41,10 +41,10 @@ import { useRoute } from "vue-router";
 import HamburgerButton from './HamburgerButton.vue'
 import gsap from "gsap";
 
+const rendered = defineModel<boolean>();
+
 const uiStore = useUIStore();
-
 const route = useRoute();
-
 const navRef = ref<HTMLElement | null>(null);
 const underlineRef = ref<HTMLDivElement | null>(null);
 
@@ -77,6 +77,13 @@ watch(
     moveUnderline();
   }
 );
+
+watch(rendered, async (r) => {
+  if (r === true) {
+    await nextTick();
+    moveUnderline();
+  }
+});
 
 const menuOpen = ref(false);
 

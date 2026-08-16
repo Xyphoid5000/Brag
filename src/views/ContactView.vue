@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import BurningRiverAutoGlassWordmark from '../components/BurningRiverAutoGlassWordmark.vue'
-import SocialLinks from '../components/SocialLinks.vue'
+import IconBar from '../components/IconBar.vue'
 
 const formStatus = ref('')
 
@@ -37,7 +37,7 @@ function submitContactForm(event: SubmitEvent) {
         <label><span>Message</span><textarea name="message" rows="5" required placeholder="Tell us what happened..."></textarea></label>
         <div class="contact-form__submit"><button class="button button--orange" type="submit">Send request <span>-></span></button><small>{{ formStatus || 'We will get back to you shortly.' }}</small></div>
       </form>
-      <SocialLinks />
+      <IconBar />
     </main>
     <footer class="landing-footer"><span>Burning River Auto Glass</span><span>Serving Cleveland and Northeast Ohio</span></footer>
   </div>

@@ -31,8 +31,13 @@
       </section>
 
       <section id="contact" class="contact-band contact-band--home">
-        <div class="contact-band__intro"><p class="eyebrow"><span></span> Let's get you moving</p><h2>Bring us the damage.<br>We'll bring the fix.</h2><p class="contact-band__copy">Ready for a clearer view? Tell us what happened and we'll help with the next step.</p></div>
-        <div class="home-contact__actions"><RouterLink class="button button--orange" to="/contact">Get a free quote <span>-></span></RouterLink><SocialLinks /></div>
+        <div class="contact-band__intro">
+          <p class="eyebrow"><span></span> Let's get you moving</p>
+          <h2>Bring us the damage.<br>We'll bring the fix.</h2>
+          <p class="contact-band__copy">Ready for a clearer view? Tell us what happened and we'll help with the next step.</p>
+          <RouterLink class="button button--orange mt-2" to="/contact">Get a free quote <span>-></span></RouterLink>
+        </div>
+        <div class="home-contact__actions"><IconBar /></div>
       </section>
     </main>
     <footer class="landing-footer"><span>Burning River Auto Glass</span><span>Serving Cleveland and Northeast Ohio</span></footer>
@@ -41,6 +46,6 @@
 
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
-import SocialLinks from '../components/SocialLinks.vue'
+import IconBar from '../components/IconBar.vue'
 
 </script>
