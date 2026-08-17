@@ -18,17 +18,17 @@ export function registerPageTransition(
 export async function cover() {
   if (!instance) return
 
-  instance.randomizeImage();
-  await nextTick()
-
-  await new Promise<void>((resolve) => {
-    gsap.to(instance!.overlay!, {
+  const transitionCar = gsap.timeline()
+    .to(instance!.overlay!, {
       xPercent: 100,
       duration: 0.45,
       ease: "power3.inOut",
     })
     
-  })
+
+  instance.randomizeImage();
+  await nextTick()
+  await transitionCar;
 }
 
 export async function reveal() {

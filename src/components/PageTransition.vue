@@ -33,10 +33,10 @@ defineExpose({
 
 <template>
   <div ref="overlay" class="transition-overlay">
-    <img :src="transitionCar_Interior" class="ovrlay cover interior" />
-    <img :src="transitionCar_Transparent" class="ovrlay cover window" />
-    <img :src="currentImage" class="ovrlay contain crack" />
-    <img :src="transitionCar_windshield" class="ovrlay contain glass" />
+    <img :src="transitionCar_Interior" class="ovrlay cover ovrlay-interior" />
+    <img :src="transitionCar_Transparent" class="ovrlay cover ovrlay-window" />
+    <img :src="currentImage" class="ovrlay contain ovrlay-crack" />
+    <img :src="transitionCar_windshield" class="ovrlay contain ovrlay-glass" />
   </div>
 </template>
 
@@ -68,21 +68,21 @@ defineExpose({
   }
 }
 
-.window {
+.ovrlay-window {
   z-index: 3;
 }
 
-.interior {
+.ovrlay-interior {
   z-index: 2;
   opacity: 0;
 }
 
-.crack {
+.ovrlay-crack {
   z-index: 1;
   backdrop-filter: blur(8px);
 }
 
-.glass {
+.ovrlay-glass {
   z-index: 4;
   opacity: 0;
 }
