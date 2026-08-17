@@ -124,7 +124,7 @@ function getHeaderTargets() {
   }
 }
 
-function startFlameAnimation(flame: HTMLElement) {
+/* function startFlameAnimation(flame: HTMLElement) {
   flamePulse?.kill()
   gsap.set(flame, { transformOrigin: '50% 75%' })
 
@@ -145,9 +145,9 @@ function startFlameAnimation(flame: HTMLElement) {
       duration: 0.12,
       ease: 'sine.inOut',
     })
-}
+} */
 
-function positionImpactEffects() {
+/* function positionImpactEffects() {
   if (!scene.value) return
 
   const effects = scene.value.querySelectorAll<HTMLElement>('.impact-sparks, .impact-spash')
@@ -159,9 +159,9 @@ function positionImpactEffects() {
       yPercent: -50,
     })
   })
-}
+} */
 
-function playImpactEffects(
+/* function playImpactEffects(
   splash: HTMLElement,
   sparks: HTMLElement,
 ) {
@@ -209,13 +209,13 @@ function playImpactEffects(
     }, '+=0.05')
 
   return effects
-}
+} */
 
 function runHeaderFlip() {
   if (!scene.value) return Promise.resolve()
 
   const { mark: headerMark, text: headerText, header, shell } = getHeaderTargets()
-  const introMark = scene.value.querySelector<HTMLElement>('.faded-logo')
+  const introMark = scene.value.querySelector<HTMLElement>('.burning-logo')
   const introText = scene.value.querySelector<HTMLElement>('.full-wordmark')
 
   if (!headerMark || !headerText || !header || !shell || !introMark || !introText) {
@@ -240,8 +240,8 @@ function runHeaderFlip() {
   return new Promise<void>((resolve) => {
     Flip.from(state, {
       duration: 1.55,
-      ease: 'power3.inOut',
-      onleave: () => { gsap.fromTo([introMark, introText], {opacity: 1, scale: 1}, {opacity: 0, scale: 0, duration: 0.14, ease: 'power1.out'})},
+      ease: 'power2.out',
+      onleave: () => { gsap.fromTo([introMark, introText], {opacity: 1, scale: 1}, {opacity: 0, scale: 0, duration: 1.14, ease: 'power1.out'})},
       absolute: false,
       onComplete: () => {
         gsap.set([headerMark, headerText], { opacity: 1 })
@@ -271,9 +271,9 @@ async function animateImpact() {
 
   const glass = scene.value.querySelector<SVGRectElement>('.glass-pane')
   const logo = scene.value.querySelector<HTMLElement>('.burning-logo')
-  const splash = scene.value.querySelector<HTMLElement>('.impact-spash')
-  const sparks = scene.value.querySelector<HTMLElement>('.impact-sparks')
-  const fadedLogo = scene.value.querySelector<HTMLElement>('.faded-logo')
+  //const splash = scene.value.querySelector<HTMLElement>('.impact-spash')
+  //const sparks = scene.value.querySelector<HTMLElement>('.impact-sparks')
+  //const fadedLogo = scene.value.querySelector<HTMLElement>('.faded-logo')
   const fullWordmark = scene.value.querySelector<HTMLElement>('.full-wordmark')
   const largeShardElements = scene.value.querySelectorAll<SVGPolygonElement>('.glass-shard:not(.glass-shard--small)')
   const smallShardElements = scene.value.querySelectorAll<SVGPolygonElement>('.glass-shard--small')
@@ -281,19 +281,19 @@ async function animateImpact() {
   const paneLighting = scene.value.querySelectorAll<HTMLElement>('.glass-scene__light-sweep, .glass-scene__reflection, .glass-scene__pane-sheen, .glass-scene__pane-edge')
   const { shell } = getHeaderTargets()
 
-  if (!glass || !logo || !splash || !sparks || !fullWordmark) return
+  if (!glass || !logo || !fullWordmark) return
 
-  positionImpactEffects()
+  //positionImpactEffects()
 
-  gsap.set(logo, { y: -240, scale: 0.82, rotation: -4, opacity: 1 })
+  gsap.set(logo, { y: -1000, scale: 0.82, rotation: -4, opacity: 1 })
   gsap.set(allShardElements, { opacity: 0, strokeOpacity: 0 })
-  gsap.set([splash, sparks], { opacity: 0, scale: 0.3 })
-  gsap.set(fadedLogo, { opacity: 0 })
-  gsap.set(fullWordmark, { y: 0, scale: 1, opacity: 0})
+  //gsap.set([splash, sparks], { opacity: 0, scale: 0.3 })
+  //gsap.set(fadedLogo, { opacity: 0 })
+  gsap.set(fullWordmark, { y: -200, scale: 1, opacity: 0})
   gsap.set(paneLighting, { opacity: 0.78 })
   if (shell) gsap.set(shell, { opacity: 0 })
 
-  startFlameAnimation(sparks)
+  //startFlameAnimation(sparks)
 
   introTimeline = gsap.timeline()
     // B falls into the exact center of the full-screen pane.
@@ -301,13 +301,13 @@ async function animateImpact() {
       y: 0,
       rotation: 0,
       scale: 1,
-      duration: 1.05,
-      ease: 'power3.in',
+      duration: 1.5,
+      ease: 'power2.in',
     })
     // The impact frame. Effects start here, not during the fall.
-    .add(() => {
-      playImpactEffects(splash, sparks).play()
-    })
+    //.add(() => {
+    //  playImpactEffects(splash, sparks).play()
+    //})
     .to(logo, {
       scale: 1.16,
       duration: 0.075,
@@ -316,46 +316,46 @@ async function animateImpact() {
     .to(glass, {
       opacity: 0,
       scale: 1.035,
-      duration: 0.11,
+      duration: 0.1,
+      ease: 'power2.out',
+    }, '<')
+    .to(paneLighting, {
+      opacity: 0,
+      scale: 1.04,
+      duration: 0.1,
       ease: 'power2.out',
     }, '<')
     .to(allShardElements, {
       opacity: 1,
       strokeOpacity: 1,
-      duration: 0.08,
+      duration: 0.1,
       ease: 'power1.in',
-    }, '<')
+    }, '<0.05')
     .to(logo, {
       scale: 1,
-      duration: 0.26,
+      duration: 0.25,
       ease: 'back.out(2.2)',
     })
-    .to(paneLighting, {
-      opacity: 0,
-      scale: 1.04,
-      duration: 0.4,
-      ease: 'power2.out',
-    }, '<')
     .to(largeShardElements, {
       x: (index) => shards.value[index].x,
       y: (index) => shards.value[index].y,
       rotation: (index) => shards.value[index].rotation,
       opacity: (index) => (index % 9 === 0 ? 0.28 : 0.8),
-      duration: 1.15,
-      ease: 'power3.out',
+      duration: 2,
+      ease: 'power2.out',
       stagger: { each: 0.006, from: 'center' },
-    }, '-=0.16')
+    }, '<')
     .to(smallShardElements, {
       x: (index) => smallShards.value[index].x,
       y: (index) => smallShards.value[index].y,
       rotation: (index) => smallShards.value[index].rotation,
       opacity: 0.9,
-      duration: 0.86,
+      duration: 1.75,
       ease: 'power3.out',
       stagger: { each: 0.009, from: 'center' },
-    }, '<0.08')
+    }, '<0.25')
     // The fire/water version lives only through the first part of the fracture.
-      .to(logo, {
+    /*.to(logo, {
       opacity: 0,
       duration: 0.42,
       ease: 'power2.in',
@@ -367,21 +367,21 @@ async function animateImpact() {
       scale: 1,
       duration: 0.42,
       ease: 'power2.out',
-    }, '<0.02')
+    }, '<0.02') */
     .to(fullWordmark, {
       opacity: 1,
       y: 25,
-      duration: 0.65,
-      ease: 'back.out(1.72)',
-    }, '-=0.18')
+      duration: 2,
+      ease: 'elastic.out(1, 0.3)',
+    }, '-=1')
     // Let the completed lockup breathe before it moves into the header.
-    .to({}, { duration: 1.5 })
+    .to({}, { duration: 1.5 });
 
   await introTimeline
   await runHeaderFlip()
 
-  flamePulse?.kill()
-  gsap.set(sparks, { opacity: 0 })
+  //flamePulse?.kill()
+  //gsap.set(sparks, { opacity: 0 })
 
   uiStore.animationPlayed = true;
   impactComplete.value = true
@@ -496,7 +496,7 @@ async function setup() {
   await nextTick()
   await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
 
-  if (uiStore.animationPlayed === true) {
+  if (uiStore.animationPlayed || uiStore.isMobile) {
     createRestoreTimeline()
     showBrokenState()
     const { header, shell } = getHeaderTargets()
@@ -539,7 +539,7 @@ onBeforeUnmount(() => {
   restoreTrigger?.kill()
   restoreTrigger = null
   introTimeline?.kill()
-  flamePulse?.kill()
+  //flamePulse?.kill()
   ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
   gsap.killTweensOf(scene.value)
 })
@@ -571,9 +571,9 @@ onBeforeUnmount(() => {
       />
     </svg>
     <div class="burning-logo"><BurningRiverEmblem /></div>
-    <div class="faded-logo"><BurningRiverFadedEmblem /></div>
+    <!--<div class="faded-logo"><BurningRiverFadedEmblem /></div>
     <div class="impact-sparks"><Flames /></div>
-    <div class="impact-spash"><Splash /></div>
+    <div class="impact-spash"><Splash /></div>-->
     <div class="full-wordmark"><BurningRiverAutoGlassWordmark /></div>
     <div class="restore-logo">
       <div class="restore-emblem"><BurningRiverEmblem /></div>

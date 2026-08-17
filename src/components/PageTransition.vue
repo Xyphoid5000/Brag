@@ -5,6 +5,9 @@ import glass02 from "../assets/Glass02.png"
 import glass03 from "../assets/Glass03.png"
 import glass04 from "../assets/glass04.png"
 import glass05 from "../assets/glass05.png"
+import transitionCar_Transparent from "../assets/transitionCar_Transparent.png"
+import transitionCar_Interior from "../assets/transitionCar_Interior.png"
+import transitionCar_windshield from "../assets/transitionCar_windshield.png"
 
 const images = [glass01, glass02, glass03, glass04, glass05]
 
@@ -30,7 +33,10 @@ defineExpose({
 
 <template>
   <div ref="overlay" class="transition-overlay">
-    <img :src="currentImage" class="glass" />
+    <img :src="transitionCar_Interior" class="ovrlay cover interior" />
+    <img :src="transitionCar_Transparent" class="ovrlay cover window" />
+    <img :src="currentImage" class="ovrlay contain crack" />
+    <img :src="transitionCar_windshield" class="ovrlay contain glass" />
   </div>
 </template>
 
@@ -38,7 +44,7 @@ defineExpose({
 .transition-overlay {
   position: fixed;
   inset: 0;
-  z-index: 99999;
+  z-index: 100;
 
   background-color: transparent;
 
@@ -47,11 +53,38 @@ defineExpose({
   transform: translateX(-100%);
 }
 
-.glass {
+.ovrlay {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+
+  .cover {
+    object-fit: cover;
+  }
+
+  .contain {
+    object-fit: contain;
+  }
 }
+
+.window {
+  z-index: 3;
+}
+
+.interior {
+  z-index: 2;
+  opacity: 0;
+}
+
+.crack {
+  z-index: 1;
+  backdrop-filter: blur(8px);
+}
+
+.glass {
+  z-index: 4;
+  opacity: 0;
+}
+
 </style>
