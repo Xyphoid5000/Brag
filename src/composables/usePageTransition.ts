@@ -3,8 +3,6 @@ import { nextTick } from "vue"
 import type PageTransition from "../components/PageTransition.vue"
 import { useUIStore } from "../stores/uiStore.ts"
 
-const uiStore = useUIStore()
-
 let instance: InstanceType<typeof PageTransition> | null = null
 
 export function registerPageTransition(
@@ -18,6 +16,8 @@ export async function cover() {
 
   instance.randomizeImage()
   await nextTick()
+
+  const uiStore = useUIStore()
 
   if (uiStore.isMobile) {
     await new Promise<void>((resolve) => {
@@ -169,6 +169,8 @@ tl.to(
 
 export async function reveal() {
   if (!instance) return
+
+  const uiStore = useUIStore()
 
   if (uiStore.isMobile) {
     await new Promise<void>((resolve) => {
