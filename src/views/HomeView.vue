@@ -20,7 +20,7 @@
         <div class="service-grid">
           <article><span class="service-number">01</span><h3>Windshield repair</h3><p>Small chips and cracks stopped before they spread.</p></article>
           <article><span class="service-number">02</span><h3>Auto glass replacement</h3><p>Precision-fit glass installed with care and confidence.</p></article>
-          <article><span class="service-number">03</span><h3>Mobile service</h3><p>We come to your driveway, lot, or roadside.</p></article>
+          <article><span class="service-number">03</span><h3>Sensor calibration</h3><p>Ensuring your vehicle's sensors are properly calibrated for optimal performance.</p></article>
         </div>
       </section>
 

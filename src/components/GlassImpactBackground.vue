@@ -5,9 +5,9 @@ import { Flip } from 'gsap/Flip'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import BurningRiverAutoGlassWordmark from './BurningRiverAutoGlassWordmark.vue'
 import BurningRiverEmblem from './BurningRiverEmblem.vue'
-import Flames from './Flames.vue'
+/* import Flames from './Flames.vue'
 import Splash from './Splash.vue'
-import BurningRiverFadedEmblem from './BurningRiverFadedEmblem.vue'
+import BurningRiverFadedEmblem from './BurningRiverFadedEmblem.vue' */
 import { useUIStore } from '../stores/uiStore'
 import { useRoute } from 'vue-router'
 
@@ -27,7 +27,7 @@ const impactComplete = ref(false)
 
 let restoreTrigger: ScrollTrigger | null = null
 let introTimeline: gsap.core.Timeline | null = null
-let flamePulse: gsap.core.Timeline | null = null
+//let flamePulse: gsap.core.Timeline | null = null
 
 const IMPACT_X = 50
 const IMPACT_Y = 44
