@@ -8,7 +8,7 @@ import glass03 from "../assets/Glass03.png"
 import glass04 from "../assets/glass04.png"
 import glass05 from "../assets/glass05.png"
 
-import transitionCar_Transparent from "../assets/transitionCar_Transparent.png"
+import transitionCar_Transparent from "../assets/transitionCar_transparent.png"
 import transitionCar_Interior from "../assets/transitionCar_Interior.png"
 import transitionCar_windshield from "../assets/transitionCar_windshield.png"
 
