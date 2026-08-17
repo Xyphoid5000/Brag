@@ -26,9 +26,12 @@ uiStore.init();
   <!-- Keep the site mounted so GSAP/Flip can measure the real header destination. -->
   <div class="site-shell" :class="{ 'site-shell--hidden': !showSite }">
     <SiteHeader v-model="showSite" />
-    <PageTransition ref="transition" />
     <main class="site-main">
       <RouterView />
     </main>
   </div>
+
+  <Teleport to="body">
+    <PageTransition ref="transition" />
+  </Teleport>
 </template>

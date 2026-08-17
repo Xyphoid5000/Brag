@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue"
 import { useUIStore } from "../stores/uiStore"
-
 import glass01 from "../assets/Glass01.png"
 import glass02 from "../assets/Glass02.png"
 import glass03 from "../assets/Glass03.png"
@@ -10,10 +9,11 @@ import glass05 from "../assets/glass05.png"
 
 import transitionCar_Transparent from "../assets/transitionCar_transparent.png"
 import transitionCar_Interior from "../assets/transitionCar_Interior.png"
-import transitionCar_windshield from "../assets/transitionCar_windshield.png"
+import transitionCar_windshield from "../assets/transitionCar_windshieldAlt.png"
 
-const uiStore = useUIStore();
 const images = [glass01, glass02, glass03, glass04, glass05]
+
+const store = useUIStore();
 
 const currentImage = ref(images[0])
 
@@ -28,45 +28,56 @@ function randomizeImage() {
 }
 
 const overlay = ref<HTMLDivElement | null>(null)
-const car = ref<HTMLDivElement | null>(null)
+const mobileLayer = ref<HTMLDivElement | null>(null)
+const desktopLayer = ref<HTMLDivElement | null>(null)
 
+const crack = ref<HTMLImageElement | null>(null)
 const interior = ref<HTMLImageElement | null>(null)
 const frame = ref<HTMLImageElement | null>(null)
-const crack = ref<HTMLImageElement | null>(null)
 const glass = ref<HTMLImageElement | null>(null)
 
 defineExpose({
-  overlay,
-  car,
-  interior,
-  frame,
-  crack,
-  glass,
-  randomizeImage,
+    overlay,
+    mobileLayer,
+    desktopLayer,
+    crack,
+    interior,
+    frame,
+    glass,
+    randomizeImage,
 })
 </script>
 
 <template>
   <div ref="overlay" class="transition-overlay">
-    <div ref="car" class="transition-car">
-      <img v-show="!uiStore.isMobile"
+
+    <div v-if="store.isMobile" ref="mobileLayer" class="transition-mobile">
+      <img
+        ref="crack"
+        :src="currentImage"
+        class="ovrlay cover ovrlay-crack"
+      />
+    </div>
+
+    <div v-else ref="desktopLayer" class="transition-car">
+      <img 
         ref="interior"
         :src="transitionCar_Interior"
         class="ovrlay cover ovrlay-interior"
         draggable="false"
       />
 
-      <img v-show="!uiStore.isMobile"
+      <img
         ref="frame"
         :src="transitionCar_Transparent"
-        class="ovrlay cover ovrlay-window"
+        class="ovrlay cover ovrlay-frame"
         draggable="false"
       />
 
-      <imb v-show="!uiStore.isMobile"
+      <img 
         ref="glass"
         :src="transitionCar_windshield"
-        class="ovrlay contain ovrlay-glass"
+        class="ovrlay contain ovrlay-windshield"
         draggable="false"
       />
 
@@ -82,22 +93,15 @@ defineExpose({
 
 <style scoped lang="scss">
 .transition-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
+    position: fixed;
+    inset: 0;
 
-  overflow: hidden;
-  pointer-events: none;
-}
+    width:100vw;
+    height:100vh;
 
-.transition-car {
-  position: absolute;
-  inset: 0;
-
-  transform: translateX(-120%);
-  transform-origin: center center;
-
-  will-change: transform, opacity;
+    overflow:hidden;
+    pointer-events:none;
+    z-index:9999;
 }
 
 .ovrlay {
@@ -115,6 +119,20 @@ defineExpose({
   will-change: transform, opacity;
 }
 
+.transition-mobile {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  visibility: hidden;
+}
+
+.transition-car {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  visibility: hidden;
+}
+
 .cover {
   object-fit: cover;
 }
@@ -125,28 +143,27 @@ defineExpose({
 
 /* Frame stays put */
 
-.ovrlay-window {
-  z-index: 4;
+.ovrlay-frame {
+  z-index: 3;
 }
 
 /* Visible only while windshield is removed */
 
 .ovrlay-interior {
-  z-index: 3;
+  z-index: 2;
   opacity: 0;
 }
 
 /* Clean windshield */
 
-.ovrlay-glass {
-  z-index: 2;
+.ovrlay-windshield {
+  z-index: 4;
 }
 
-/* Crack sits ON the windshield */
-
 .ovrlay-crack {
-  z-index: 3;
-
+  z-index: 1;
+  opacity: 0;
+  object-position: center;
   mix-blend-mode: normal;
 }
 </style>
