@@ -1,5 +1,5 @@
 <template>
-  <header class="landing-nav" style="flex-wrap: wrap;">
+  <header class="landing-nav" style="justify-content: space-around;" :style="{flexWrap: uiStore.isMobile ? undefined : 'wrap'}">
     <RouterLink class="landing-brand" to="/" aria-label="Burning River Auto Glass home" @click="menuOpen = false">
       <span class="landing-brand__mark"><BurningRiverFadedEmblem /></span>
       <span class="landing-brand__text"><BurningRiverAutoGlassWordmark /></span>
@@ -21,7 +21,6 @@
         <RouterLink to="/why-us">Why us</RouterLink>
         <RouterLink to="/gallery">Gallery</RouterLink>
         <RouterLink to="/contact">Contact</RouterLink>
-        <div ref="underlineRef" class="underline"></div>
       </nav>
       <div v-if="uiStore.isDesktop" class="landing-extras" style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
         <a class="landing-nav__phone" href="tel:3303481455"><span>24/7</span> (330) 348-1455</a>
@@ -36,55 +35,10 @@ import { RouterLink } from 'vue-router'
 import { useUIStore } from '../stores/uiStore'
 import BurningRiverFadedEmblem from './BurningRiverFadedEmblem.vue'
 import BurningRiverAutoGlassWordmark from './BurningRiverAutoGlassWordmark.vue'
-import { ref, nextTick, onMounted, watch } from "vue";
-import { useRoute } from "vue-router";
+import { ref } from "vue";
 import HamburgerButton from './HamburgerButton.vue'
-import gsap from "gsap";
-
-const rendered = defineModel<boolean>();
 
 const uiStore = useUIStore();
-const route = useRoute();
-const navRef = ref<HTMLElement | null>(null);
-const underlineRef = ref<HTMLDivElement | null>(null);
-
-const moveUnderline = () => {
-  if (!navRef.value || !underlineRef.value) return;
-
-  const active = navRef.value.querySelector(
-    ".router-link-active"
-  ) as HTMLElement | null;
-
-  if (!active) return;
-
-  gsap.to(underlineRef.value, {
-    x: active.offsetLeft,
-    width: active.offsetWidth,
-    duration: 0.35,
-    ease: "power2.out",
-  });
-};
-
-onMounted(async () => {
-  await nextTick();
-  moveUnderline();
-});
-
-watch(
-  () => route.fullPath,
-  async () => {
-    await nextTick();
-    moveUnderline();
-  }
-);
-
-watch(rendered, async (r) => {
-  if (r === true) {
-    await nextTick();
-    moveUnderline();
-  }
-});
-
 const menuOpen = ref(false);
 
 function replayImpact() {
