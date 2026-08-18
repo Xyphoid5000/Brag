@@ -12,6 +12,7 @@ export const useUIStore = defineStore('uiStore', () => {
   }
 
   function init() {
+    updateDimensions();
     window.addEventListener('resize', updateDimensions)
   }
 

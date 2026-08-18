@@ -23,7 +23,7 @@ export function registerPageTransition(transition: InstanceType<typeof PageTrans
 async function elements(isEnter: boolean): Promise<ITransitionElements | null> {
   const store = useUIStore();
 
-  if (!instance || !store.animationPlayed ) return null
+  if (!instance || (!store.animationPlayed  && !store.isMobile)) return null
 
   if (isEnter) {
     instance.randomizeImage();

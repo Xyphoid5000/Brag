@@ -1,5 +1,5 @@
 <template>
-  <header class="landing-nav">
+  <header class="landing-nav" style="flex-wrap: wrap;">
     <RouterLink class="landing-brand" to="/" aria-label="Burning River Auto Glass home" @click="menuOpen = false">
       <span class="landing-brand__mark"><BurningRiverFadedEmblem /></span>
       <span class="landing-brand__text"><BurningRiverAutoGlassWordmark /></span>
@@ -15,7 +15,7 @@
       </nav>
     </template>
     <template v-else>
-      <nav ref="navRef" class="landing-nav__links" aria-label="Primary navigation">
+      <nav ref="navRef" class="landing-nav__links" style="white-space: nowrap;" aria-label="Primary navigation">
         <RouterLink to="/">Home</RouterLink>
         <RouterLink to="/services">Services</RouterLink>
         <RouterLink to="/why-us">Why us</RouterLink>

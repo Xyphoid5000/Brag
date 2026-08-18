@@ -69,6 +69,9 @@ const icons = computed(() => [
 .icon-bar {
   display: flex;
   align-items: center;
+  padding: .5rem;
+  background: rgba(8, 18, 31, 0.44);
+  border-radius: 2rem;
   gap: 1rem;
 }
 

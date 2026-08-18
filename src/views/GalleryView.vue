@@ -10,15 +10,15 @@
       </section>
       <section class="gallery-grid" aria-label="Burning River Auto Glass gallery">
         <figure class="gallery-card gallery-card--wide">
-          <img src="https://images.unsplash.com/photo-1504215680853-026ed2a45def?auto=format&fit=crop&w=1400&q=85" alt="Vehicle traveling on an open road" />
+          <img src="../assets/on_the_road.png" alt="Burning River Auto Glass van on the road" />
           <figcaption><span>01</span><strong>Back on the road</strong><small>Mobile service, wherever the day finds you.</small></figcaption>
         </figure>
         <figure class="gallery-card">
-          <img src="https://images.squarespace-cdn.com/content/v1/66b24961ed16e20fe92be52e/1786336795922-JVZ7SCTIYOF1XOBA3T9W/unsplash-image-NZ7fg_IVAzo.jpg?format=750w" alt="Technician working on a vehicle" />
+          <img src="../assets/windshield_replacement.jfif" alt="Technician working on a vehicle" />
           <figcaption><span>02</span><strong>Precise by hand</strong><small>Clean work. Careful finish.</small></figcaption>
         </figure>
         <figure class="gallery-card gallery-card--tall">
-          <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1000&q=85" alt="Close view of a polished vehicle" />
+          <img src="../assets/truck_windshield.jfif" alt="Replacement windshield going in a semi truck" />
           <figcaption><span>03</span><strong>Made to fit</strong><small>Windshield, side, and rear glass.</small></figcaption>
         </figure>
         <figure class="gallery-card gallery-card--wide gallery-card--accent">
@@ -40,6 +40,11 @@
           :before="before03"
           :after="after03"
         />
+        <BeforeAfterCard
+          title="If it has wheels and glass, we fix it"
+          :before="before04"
+          :after="after04"
+        />
       </section>
     </main>
     <footer class="landing-footer"><span>Burning River Auto Glass</span><span>Serving Cleveland and Northeast Ohio</span></footer>
@@ -55,4 +60,6 @@ import before02 from '../assets/before02.jpg'
 import after02 from '../assets/after02.jpg'
 import before03 from '../assets/before03.jpg'
 import after03 from '../assets/after03.jpg'
+import before04 from '../assets/before04.jfif'
+import after04 from '../assets/after04.jfif'
 </script>

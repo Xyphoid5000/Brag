@@ -5,9 +5,6 @@ import { Flip } from 'gsap/Flip'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import BurningRiverAutoGlassWordmark from './BurningRiverAutoGlassWordmark.vue'
 import BurningRiverEmblem from './BurningRiverEmblem.vue'
-/* import Flames from './Flames.vue'
-import Splash from './Splash.vue'
-import BurningRiverFadedEmblem from './BurningRiverFadedEmblem.vue' */
 import { useUIStore } from '../stores/uiStore'
 import { useRoute } from 'vue-router'
 
@@ -27,7 +24,6 @@ const impactComplete = ref(false)
 
 let restoreTrigger: ScrollTrigger | null = null
 let introTimeline: gsap.core.Timeline | null = null
-//let flamePulse: gsap.core.Timeline | null = null
 
 const IMPACT_X = 50
 const IMPACT_Y = 44
@@ -93,7 +89,7 @@ function buildShards() {
     }
   })
 
-  smallShards.value = Array.from({ length: 72 }, (_, index) => {
+ smallShards.value = Array.from({ length: 72 }, (_, index) => {
     const angle = -Math.PI / 2 + (index / 72) * Math.PI * 2 + ((index % 3) - 1) * 0.035
     const radius = edgeRadius(angle) * (0.72 + (index % 7) * 0.035)
     const size = 0.7 + (index % 4) * 0.24
@@ -112,7 +108,7 @@ function buildShards() {
       rotation: (index % 2 ? 1 : -1) * (28 + ((index * 17) % 55)),
       delay: 0.04 + (index % 9) * 0.008,
     }
-  })
+  }) 
 }
 
 function getHeaderTargets() {
@@ -123,93 +119,6 @@ function getHeaderTargets() {
     shell: document.querySelector<HTMLElement>('.site-shell'),
   }
 }
-
-/* function startFlameAnimation(flame: HTMLElement) {
-  flamePulse?.kill()
-  gsap.set(flame, { transformOrigin: '50% 75%' })
-
-  flamePulse = gsap.timeline({ repeat: -1, yoyo: true })
-    .to(flame, {
-      scaleX: 1.025,
-      scaleY: 1.045,
-      x: 1.5,
-      rotation: 0.8,
-      duration: 0.15,
-      ease: 'sine.inOut',
-    })
-    .to(flame, {
-      scaleX: 0.985,
-      scaleY: 0.975,
-      x: -1,
-      rotation: -0.6,
-      duration: 0.12,
-      ease: 'sine.inOut',
-    })
-} */
-
-/* function positionImpactEffects() {
-  if (!scene.value) return
-
-  const effects = scene.value.querySelectorAll<HTMLElement>('.impact-sparks, .impact-spash')
-  effects.forEach((effect: HTMLElement) => {
-    gsap.set(effect, {
-      left: `${IMPACT_X}%`,
-      top: `${IMPACT_Y}%`,
-      xPercent: -50,
-      yPercent: -50,
-    })
-  })
-} */
-
-/* function playImpactEffects(
-  splash: HTMLElement,
-  sparks: HTMLElement,
-) {
-  const effects = gsap.timeline()
-
-  effects
-    .set([sparks, splash], {
-      opacity: 0,
-      scale: 0.35,
-      rotation: 0,
-      xPercent: -50,
-      yPercent: -50,
-    })
-    .set(sparks, {
-      scale: 0.72,
-    })
-    .to(splash, {
-      opacity: 1,
-      scale: 1.04,
-      duration: 0.14,
-      ease: 'power4.out',
-    })
-    .to(sparks, {
-      opacity: 1,
-      scale: 1,
-      duration: 0.12,
-      ease: 'power4.out',
-    }, '<0.01')
-    .to(splash, {
-      scale: 1.12,
-      duration: 0.14,
-      ease: 'power2.out',
-    })
-    .to(sparks, {
-      scale: 1.05,
-      x: 2,
-      rotation: 1,
-      duration: 0.14,
-      ease: 'power2.out',
-    }, '<')
-    .to([splash, sparks], {
-      opacity: 0,
-      duration: 0.55,
-      ease: 'power2.out',
-    }, '+=0.05')
-
-  return effects
-} */
 
 function runHeaderFlip() {
   if (!scene.value) return Promise.resolve()
@@ -271,9 +180,6 @@ async function animateImpact() {
 
   const glass = scene.value.querySelector<SVGRectElement>('.glass-pane')
   const logo = scene.value.querySelector<HTMLElement>('.burning-logo')
-  //const splash = scene.value.querySelector<HTMLElement>('.impact-spash')
-  //const sparks = scene.value.querySelector<HTMLElement>('.impact-sparks')
-  //const fadedLogo = scene.value.querySelector<HTMLElement>('.faded-logo')
   const fullWordmark = scene.value.querySelector<HTMLElement>('.full-wordmark')
   const largeShardElements = scene.value.querySelectorAll<SVGPolygonElement>('.glass-shard:not(.glass-shard--small)')
   const smallShardElements = scene.value.querySelectorAll<SVGPolygonElement>('.glass-shard--small')
@@ -283,17 +189,11 @@ async function animateImpact() {
 
   if (!glass || !logo || !fullWordmark) return
 
-  //positionImpactEffects()
-
   gsap.set(logo, { y: -1000, scale: 0.82, rotation: -4, opacity: 1 })
   gsap.set(allShardElements, { opacity: 0, strokeOpacity: 0 })
-  //gsap.set([splash, sparks], { opacity: 0, scale: 0.3 })
-  //gsap.set(fadedLogo, { opacity: 0 })
   gsap.set(fullWordmark, { y: -200, scale: 1, opacity: 0})
   gsap.set(paneLighting, { opacity: 0.78 })
   if (shell) gsap.set(shell, { opacity: 0 })
-
-  //startFlameAnimation(sparks)
 
   introTimeline = gsap.timeline()
     // B falls into the exact center of the full-screen pane.
@@ -305,9 +205,6 @@ async function animateImpact() {
       ease: 'power2.in',
     })
     // The impact frame. Effects start here, not during the fall.
-    //.add(() => {
-    //  playImpactEffects(splash, sparks).play()
-    //})
     .to(logo, {
       scale: 1.16,
       duration: 0.075,
@@ -352,22 +249,8 @@ async function animateImpact() {
       opacity: 0.9,
       duration: 1.75,
       ease: 'power3.out',
-      stagger: { each: 0.009, from: 'center' },
-    }, '<0.25')
-    // The fire/water version lives only through the first part of the fracture.
-    /*.to(logo, {
-      opacity: 0,
-      duration: 0.42,
-      ease: 'power2.in',
-    }, '-=0.62')
-    .fromTo(fadedLogo, {
-      opacity: 0,
-    }, {
-      opacity: 1,
-      scale: 1,
-      duration: 0.42,
-      ease: 'power2.out',
-    }, '<0.02') */
+      stagger: { amount: 0.009, from: 'center' },
+    }, '<0.25') 
     .to(fullWordmark, {
       opacity: 1,
       y: 25,
@@ -379,9 +262,6 @@ async function animateImpact() {
 
   await introTimeline
   await runHeaderFlip()
-
-  //flamePulse?.kill()
-  //gsap.set(sparks, { opacity: 0 })
 
   uiStore.animationPlayed = true;
   impactComplete.value = true
@@ -487,7 +367,7 @@ function showBrokenState() {
     x: (index) => smallShards.value[index].x,
     y: (index) => smallShards.value[index].y,
     rotation: (index) => smallShards.value[index].rotation,
-  })
+  }) 
   impactComplete.value = true
 }
 
@@ -495,6 +375,8 @@ async function setup() {
   buildShards()
   await nextTick()
   await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
+  await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
+
 
   if (uiStore.animationPlayed || uiStore.isMobile) {
     createRestoreTimeline()
@@ -539,7 +421,6 @@ onBeforeUnmount(() => {
   restoreTrigger?.kill()
   restoreTrigger = null
   introTimeline?.kill()
-  //flamePulse?.kill()
   ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
   gsap.killTweensOf(scene.value)
 })
@@ -571,9 +452,6 @@ onBeforeUnmount(() => {
       />
     </svg>
     <div class="burning-logo"><BurningRiverEmblem /></div>
-    <!--<div class="faded-logo"><BurningRiverFadedEmblem /></div>
-    <div class="impact-sparks"><Flames /></div>
-    <div class="impact-spash"><Splash /></div>-->
     <div class="full-wordmark"><BurningRiverAutoGlassWordmark /></div>
     <div class="restore-logo">
       <div class="restore-emblem"><BurningRiverEmblem /></div>
