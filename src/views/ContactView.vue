@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import BurningRiverAutoGlassWordmark from '../components/BurningRiverAutoGlassWordmark.vue'
-import IconBar from '../components/IconBar.vue'
 
 const formStatus = ref('')
 

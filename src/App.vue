@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { RouterView } from 'vue-router'
 import GlassImpactBackground from './components/GlassImpactBackground.vue'
 import Layout from './components/Layout.vue'
-import { useUIStore } from './stores/uiStore'
 import PageTransition from "./components/PageTransition.vue"
 
 const showSite = ref(false)
