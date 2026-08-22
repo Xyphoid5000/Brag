@@ -4,25 +4,15 @@ import { Icon } from "@iconify/vue";
 
 interface Props {
   size?: number;
+  withBackground?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   size: 24,
+  withBackground: false,
 });
 
 const icons = computed(() => [
-  {
-    icon: "lucide:mail",
-    href: "mailto:burningriverautoglass@gmail.com",
-    label: "Email",
-    color: "#f2efed",
-  },
-  {
-    icon: "lucide:phone",
-    href: "tel:+13303481455",
-    label: "Phone",
-    color: "#586128"
-  },
   {
     icon: "simple-icons:facebook",
     href: "https://www.facebook.com/profile.php?id=61560531697293",
@@ -45,7 +35,7 @@ const icons = computed(() => [
 </script>
 
 <template>
-  <nav class="icon-bar">
+  <nav class="icon-bar" :class="{ 'background': props.withBackground }">
     <a
       v-for="icon in icons"
       :key="icon.label"
@@ -65,14 +55,17 @@ const icons = computed(() => [
   </nav>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .icon-bar {
   display: flex;
   align-items: center;
-  padding: .5rem;
-  background: rgba(8, 18, 31, 0.44);
-  border-radius: 2rem;
-  gap: 1rem;
+  gap: 3rem;
+
+  &.background {
+    background: rgba(8, 18, 31, 0.44);
+    padding: 2rem;
+    border-radius: 2rem;
+  }
 }
 
 .icon {

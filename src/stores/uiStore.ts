@@ -11,14 +11,15 @@ export const useUIStore = defineStore('uiStore', () => {
     height.value = window.innerHeight
   }
 
+  const isMobile = computed(() => width.value <= 700)
+  const isTablet = computed(() => width.value > 700 && width.value < 1024)
+  const isDesktop = computed(() => width.value >= 1024)
+
+
   function init() {
     updateDimensions();
     window.addEventListener('resize', updateDimensions)
   }
-
-  const isMobile = computed(() => width.value <= 700)
-  const isTablet = computed(() => width.value > 700 && width.value < 1024)
-  const isDesktop = computed(() => width.value >= 1024)
 
   return { width, height, init, isMobile, isTablet, isDesktop, animationPlayed }
 })

@@ -16,7 +16,6 @@
       </section>
       <section class="detail-callout detail-callout--why"><p class="eyebrow"><span></span> North East Ohio roots</p><h2>Your story matters.<br><em>So does your safety.</em></h2><p>From a single stone chip to a shattered door glass, we are here to make the next step feel straightforward.</p><RouterLink class="button button--orange" to="/contact">Let's give you something to brag about <span>-></span></RouterLink></section>
     </main>
-    <footer class="landing-footer"><span>Burning River Auto Glass</span><span>Serving Cleveland and Northeast Ohio</span></footer>
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <header class="landing-nav" style="justify-content: space-around;" :style="{flexWrap: uiStore.isMobile ? undefined : 'wrap'}">
+  <header class="landing-nav" style="justify-content: space-around; width: 100vw;" :style="{flexWrap: uiStore.isMobile ? undefined : 'wrap'}">
     <RouterLink class="landing-brand" to="/" aria-label="Burning River Auto Glass home" @click="menuOpen = false">
       <span class="landing-brand__mark"><BurningRiverFadedEmblem /></span>
       <span class="landing-brand__text"><BurningRiverAutoGlassWordmark /></span>

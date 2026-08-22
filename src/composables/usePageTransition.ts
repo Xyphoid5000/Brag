@@ -1,403 +1,241 @@
+// src/composables/usePageTransition.ts
+
 import gsap from "gsap"
 import { nextTick } from "vue"
-import type PageTransition from "../components/PageTransition.vue"
+
 import { useUIStore } from "../stores/uiStore.ts"
 
-type ITransitionElements = {
-  overlay: HTMLDivElement | null;
-  mobileLayer: HTMLDivElement | null;
-  desktopLayer: HTMLDivElement | null;
-  crack: HTMLImageElement | null;
-  frame: HTMLImageElement | null;
-  glass: HTMLImageElement | null;
-  interior: HTMLImageElement | null;
-  isMobile: boolean;
-}
+import {
+  transitionState,
+  killTimelines,
+} from "./transitionState"
 
-let instance: InstanceType<typeof PageTransition> | null = null;
+import { useGlassTransition } from "./useGlassTransition"
+import { useCarTransition } from "./useCarTransition"
 
-export function registerPageTransition(transition: InstanceType<typeof PageTransition>) {
-  instance = transition;
-};
+const glassTransition = useGlassTransition()
+const carTransition = useCarTransition()
 
-async function elements(isEnter: boolean): Promise<ITransitionElements | null> {
-  const store = useUIStore();
-
-  if (!instance || (!store.animationPlayed  && !store.isMobile)) return null
-
-  if (isEnter) {
-    instance.randomizeImage();
-    await nextTick();
-  }
-
-  const elements: ITransitionElements = {
-    overlay: instance.overlay,
-    mobileLayer: instance.mobileLayer,
-    desktopLayer: instance.desktopLayer,
-    crack: instance.crack,
-    frame: instance.frame,
-    glass: instance.glass,
-    interior: instance.interior,
-    isMobile: store.isMobile,
-  }
-
-  return elements;
-}
+/*
+|--------------------------------------------------------------------------
+| Wait for GSAP
+|--------------------------------------------------------------------------
+*/
 
 function waitForTimeline(tl: gsap.core.Timeline) {
   return new Promise<void>((resolve) => {
     tl.eventCallback("onComplete", resolve)
-  });
+  })
 }
 
-async function mobileTransitionEnter(el: ITransitionElements) {
-  gsap.set(el.desktopLayer,{
-    autoAlpha:0
-  });
+/*
+|--------------------------------------------------------------------------
+| Build master timeline
+|--------------------------------------------------------------------------
+|
+| Glass is ALWAYS the base transition.
+|
+| Desktop adds the car timeline at exactly the same starting point.
+|
+*/
 
-  gsap.set(el.mobileLayer,{
-    autoAlpha:1
-  });
+function buildMasterTimeline(
+  glassTimeline: gsap.core.Timeline,
+  carTimeline?: gsap.core.Timeline,
+) {
+  const master = gsap.timeline({
+    paused: true,
+  })
 
- const tl=gsap.timeline()
+  master.add(glassTimeline, 0)
 
-  tl.set(el.crack,{
-      opacity:0,
-      scale:.92,
-      xPercent:0
-  });
+  if (carTimeline) {
+    master.add(carTimeline, 0)
+  }
 
-  tl.to(el.crack,{
-      opacity:1,
-      scale:1,
-      duration:.15
-  });
-
-  tl.to({},{
-      duration:.3
-  });
-
-  await waitForTimeline(tl);
-};
-
-async function transitionEnter(el: ITransitionElements) {
-
-  gsap.set(el.desktopLayer,{
-      autoAlpha:1
-  });
-
-  gsap.set(el.mobileLayer,{
-      autoAlpha:0
-  });
-
-  if (!el.overlay || !el.desktopLayer || !el.interior || !el.frame || !el.crack || !el.glass) return;
-
-  gsap.killTweensOf([
-    el.overlay,
-    el.desktopLayer,
-    el.interior,
-    el.frame,
-    el.crack,
-    el.glass,
-  ]);
-
-  // Reset state
-  gsap.set(el.overlay, {
-    autoAlpha: 1,
-  });
-
-  gsap.set(el.desktopLayer, {
-    xPercent: -120,
-    x: 0,
-    y: 0,
-    scale: 1,
-    rotation: 0,
-    transformOrigin: "50% 50%",
-  });
-
-  gsap.set(el.frame, {
-    opacity: 1,
-    scale: 1,
-    rotation: 0,
-  });
-
-  gsap.set(el.interior, {
-    opacity: 0,
-  });
-
-  gsap.set(el.glass, {
-    opacity: .8,
-    x: 0,
-    y: -50,
-    scale: 1.1,
-    rotation: 0,
-    transformOrigin: "center center",
-  });
-
-  gsap.set(el.crack, {
-    opacity: 1,
-    x: 0,
-    y: 0,
-    scale: 1,
-    rotation: 0,
-    transformOrigin: "50% 50%",
-  });
-
-  const tl = gsap.timeline();
-
-  // Car slides in
-  tl.to(el.desktopLayer, {
-    xPercent: 0,
-    duration: 0.8,
-    ease: "power3.out",
-  });
-
-  // Slight impact shake
-  tl.to(
-    el.desktopLayer,
-    {
-      x: 5,
-      y: -3,
-      duration: 0.04,
-      repeat: 5,
-      yoyo: true,
-      ease: "none",
-    },
-    "+=0.05"
-  );
-
-  // Let the user actually see the cracked windshield
-  tl.to({}, { duration: 0.5 });
-
-  // Frame flexes slightly
-  tl.to(
-    el.frame,
-    {
-      rotation: -0.6,
-      duration: 0.08,
-      repeat: 1,
-      yoyo: true,
-      ease: "power1.inOut",
-    },
-    "<"
-  );
-
-  // Pull the cracked windshield out of the frame
-  tl.to(
-    [el.glass, el.crack],
-    {
-      x: -80,
-      y: -260,
-
-      rotation: -6,
-      rotationY: -12,
-      rotationX: 8,
-
-      scale: 1.35,
-
-      filter: "blur(8px)",
-
-      opacity: 0,
-
-      duration: 1,
-      ease: "power2.in",
-    }, 
-    "<"
-  );
-
-  // Reveal the interior as soon as the windshield leaves
-  tl.set(
-    el.interior,
-    {
-      opacity: 1,
-    },
-    "<"
-  );
-
-  await waitForTimeline(tl);
+  return master
 }
 
-async function mobileTransitionExit(el: ITransitionElements) {
-  const tl=gsap.timeline();
+/*
+|--------------------------------------------------------------------------
+| Play timeline
+|--------------------------------------------------------------------------
+*/
 
-  tl.to(el.crack,{
-      xPercent:120,
-      opacity:0,
-      duration:.35,
-      ease:"power2.in"
-  })
+async function playTimeline(tl: gsap.core.Timeline) {
+  transitionState.masterTimeline = tl
 
-  tl.set(el.mobileLayer,{
-      autoAlpha:0
-  })
+  tl.play(0)
 
-  await waitForTimeline(tl);
-};
+  await waitForTimeline(tl)
 
-async function transitionExit(el: ITransitionElements) {
-  if (!el.overlay || !el.desktopLayer || !el.interior || !el.frame || !el.crack || !el.glass) return;
+  /*
+   * Only clear references here.
+   *
+   * DO NOT call killTimelines().
+   * The timeline has already completed.
+   */
+  transitionState.masterTimeline = null
+  transitionState.glassTimeline = null
+  transitionState.carTimeline = null
+}
 
-  gsap.killTweensOf([
-    el.overlay,
-    el.desktopLayer,
-    el.interior,
-    el.frame,
-    el.crack,
-    el.glass,
-  ]);
-
-  // Start where cover() left off.
-  gsap.set(el.desktopLayer, {
-    xPercent: 0,
-    x: 0,
-    y: 0,
-    scale: 1,
-    opacity: 1,
-    transformOrigin: "50% 50%",
-  });
-
-  gsap.set(el.frame, {
-    opacity: 1,
-  });
-
-  gsap.set(el.interior, {
-    opacity: 1,
-  });
-
-  // Crack is gone.
-  gsap.set(el.crack, {
-    opacity: 0,
-  });
-
-  const tl = gsap.timeline();
-
-    tl.fromTo(el.glass, {
-      x: -80,
-      y: -260,
-
-      rotation: -6,
-      rotationY: -12,
-      rotationX: 8,
-
-      scale: 1.35,
-
-      filter: "blur(8px)",
-
-      opacity: 0.5,
-    },
-    {
-    opacity: 0.8,
-    x: 0,
-    y: -50,
-    scale: 1.1,
-    rotation: 0,
-    rotationX: 0,
-    rotationY: 0,
-    filter: "blur(0px)",
-    duration: 1,
-    ease: "power1.in"
-  });
-
-  tl.to(el.interior, {
-    opacity: 0,
-    duration: 1,
-    ease: "power2.out"
-  }, "<");
-
-  // Give the eye a moment to register the new windshield.
-  tl.to({}, {
-    duration: 0.5,
-  });
-
-  // Camera flies through the windshield.
-  tl.to(
-    el.desktopLayer,
-    {
-      scale: 3.25,
-      y: 80,
-      duration: 1.4,
-      ease: "power2.in",
-      transformOrigin: "50% 50%",
-    },
-    "<"
-  );
-
-  // Fade the overlay near the end so the new page is fully visible.
-  tl.to(
-    el.overlay,
-    {
-      opacity: 0,
-      duration: 0.2,
-      ease: "power2.out",
-    },
-    "-=0.4"
-  );
-
-  // Reset everything for the next navigation.
-  tl.set(el.overlay, {
-    opacity: 1,
-  });
-
-  tl.set(el.desktopLayer, {
-    xPercent: -120,
-    x: 0,
-    y: 0,
-    scale: 1,
-    opacity: 1,
-    rotation: 0,
-  });
-
-  tl.set(el.interior, {
-    opacity: 0,
-  });
-
-  tl.set(el.frame, {
-    opacity: 1,
-  });
-
-  tl.set(el.glass, {
-    opacity: 0,
-    x: 0,
-    y: 0,
-    scale: 1,
-    rotation: 0,
-    rotationX: 0,
-    rotationY: 0,
-    filter: "blur(0px)",
-  });
-
-  tl.set(el.crack, {
-    opacity: 0,
-    x: 0,
-    y: 0,
-    scale: 1,
-    rotation: 0,
-    rotationX: 0,
-    rotationY: 0,
-    filter: "blur(0px)",
-  });
-
-  await waitForTimeline(tl);
-};
+/*
+|--------------------------------------------------------------------------
+| COVER
+|--------------------------------------------------------------------------
+|
+| Runs before the router changes routes.
+|
+| Mobile:
+|   crack slides in
+|   holds for 1.5s
+|
+| Desktop:
+|   crack slides in
+|   car enters underneath it
+|   windshield is removed
+|   interior appears
+|
+| The router is allowed to continue only when the master
+| timeline reaches its completion point.
+|
+*/
 
 export async function cover() {
-  const el = await elements(true);
-  if (!el) return;
+  const store = useUIStore()
 
-  if (el.isMobile) {
-    return await mobileTransitionEnter(el);
-  } 
+  /*
+   * Preserve the existing initial-load behavior.
+   */
+  if (!store.animationPlayed) {
+    return
+  }
 
-  return await transitionEnter(el);
-};
+  /*
+   * Kill anything left over from a previous transition BEFORE
+   * creating the new timelines.
+   */
+  killTimelines()
+
+  transitionState.isMobile = store.isMobile
+  transitionState.isTransitioning = true
+
+  /*
+   * Pick a new crack image.
+   */
+  transitionState.randomizeCrack?.()
+
+  /*
+   * Wait for Vue to render the new crack image.
+   */
+  await nextTick()
+
+  /*
+   * Base transition.
+   */
+  const glassTimeline =
+    glassTransition.buildPreTimeline()
+
+  transitionState.glassTimeline = glassTimeline
+
+  /*
+   * Desktop enhancement.
+   */
+  let carTimeline: gsap.core.Timeline | undefined
+
+  if (!store.isMobile) {
+    carTimeline =
+      carTransition.buildPreTimeline()
+
+    transitionState.carTimeline = carTimeline
+  }
+
+  /*
+   * Run both from exactly t=0.
+   */
+  const master = buildMasterTimeline(
+    glassTimeline,
+    carTimeline,
+  )
+
+  await playTimeline(master)
+}
+
+/*
+|--------------------------------------------------------------------------
+| REVEAL
+|--------------------------------------------------------------------------
+|
+| Runs after Vue Router has completed the navigation.
+|
+| Mobile:
+|   crack slides off to the right
+|
+| Desktop:
+|   fresh windshield comes in
+|   camera pushes through windshield
+|   interior fades
+|   transition completes
+|
+*/
 
 export async function reveal() {
-  const el = await elements(false);
-  if (!el) return;
+  const store = useUIStore()
 
-  if (el.isMobile) {
-    return await mobileTransitionExit(el);
-  } 
+  /*
+   * Match cover() behavior for the initial page load.
+   */
+  if (!store.animationPlayed) {
+    return
+  }
 
-  return await transitionExit(el);
-};
+  killTimelines()
+
+  transitionState.isMobile = store.isMobile
+  transitionState.isTransitioning = true
+
+  /*
+   * Base transition.
+   */
+  const glassTimeline =
+    glassTransition.buildPostTimeline()
+
+  transitionState.glassTimeline = glassTimeline
+
+  /*
+   * Desktop enhancement.
+   */
+  let carTimeline: gsap.core.Timeline | undefined
+
+  if (!store.isMobile) {
+    carTimeline =
+      carTransition.buildPostTimeline()
+
+    transitionState.carTimeline = carTimeline
+  }
+
+  /*
+   * Run both simultaneously.
+   */
+  const master = buildMasterTimeline(
+    glassTimeline,
+    carTimeline,
+  )
+
+  await playTimeline(master)
+
+  transitionState.isTransitioning = false
+}
+
+/*
+|--------------------------------------------------------------------------
+| Manual cleanup
+|--------------------------------------------------------------------------
+*/
+
+export function killPageTransition() {
+  killTimelines()
+
+  transitionState.isTransitioning = false
+}

@@ -47,7 +47,6 @@
         />
       </section>
     </main>
-    <footer class="landing-footer"><span>Burning River Auto Glass</span><span>Serving Cleveland and Northeast Ohio</span></footer>
   </div>
 </template>
 

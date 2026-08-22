@@ -18,8 +18,7 @@ $white: #C8CCD1;
 
 * { box-sizing: border-box; }
 html { min-width: 320px; min-height: 100%; background: $paper; scroll-behavior: smooth; }
-body { min-width: 320px; min-height: 185vh; margin: 0; overflow-x: hidden; background: radial-gradient(circle at 50% 28%, #1d2125 0, $paper 55rem); }
-#app { min-height: 185vh; }
+body { min-width: 320px; margin: 0; overflow-x: hidden; background: radial-gradient(circle at 50% 28%, #1d2125 0, $paper 55rem); }
 
 .glass-scene { position: fixed; z-index: 10; inset: 0; width: 100vw; height: 100vh; overflow: hidden; pointer-events: none; background: rgba(7,15,26,.18); }
 .glass-scene__wash { position: absolute; inset: 0; background: radial-gradient(circle at 50% 42%, rgba(116,151,160,.22), rgba(12,27,42,.45) 42%, rgba(5,12,22,.82) 100%); }

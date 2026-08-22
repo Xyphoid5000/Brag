@@ -1,19 +1,28 @@
 <script setup lang="ts">
-import { ref } from "vue"
-import { useUIStore } from "../stores/uiStore"
+import { onMounted, ref } from "vue"
+
 import glass01 from "../assets/Glass01.png"
 import glass02 from "../assets/Glass02.png"
 import glass03 from "../assets/Glass03.png"
 import glass04 from "../assets/glass04.png"
 import glass05 from "../assets/glass05.png"
 
-import transitionCar_Transparent from "../assets/transitionCar_transparent.png"
-import transitionCar_Interior from "../assets/transitionCar_Interior.png"
-import transitionCar_windshield from "../assets/transitionCar_windshieldAlt.png"
+import transitionCar from "../assets/transitionCar_transparent.png"
+import transitionInterior from "../assets/transitionCar_Interior.png"
+import transitionGlass from "../assets/transitionCar_windshieldAlt.png"
 
-const images = [glass01, glass02, glass03, glass04, glass05]
+import {
+  registerTransitionElements,
+  registerCrackRandomizer
+} from "../composables/transitionState"
 
-const store = useUIStore();
+const images = [
+  glass01,
+  glass02,
+  glass03,
+  glass04,
+  glass05,
+]
 
 const currentImage = ref(images[0])
 
@@ -28,63 +37,71 @@ function randomizeImage() {
 }
 
 const overlay = ref<HTMLDivElement | null>(null)
-const mobileLayer = ref<HTMLDivElement | null>(null)
 const desktopLayer = ref<HTMLDivElement | null>(null)
 
 const crack = ref<HTMLImageElement | null>(null)
-const interior = ref<HTMLImageElement | null>(null)
 const frame = ref<HTMLImageElement | null>(null)
 const glass = ref<HTMLImageElement | null>(null)
+const interior = ref<HTMLImageElement | null>(null)
+
+onMounted(() => {
+    registerTransitionElements({
+    overlay: overlay.value,
+    desktopLayer: desktopLayer.value,
+    crack: crack.value,
+    frame: frame.value,
+    glass: glass.value,
+    interior: interior.value,
+  })
+
+  registerCrackRandomizer(randomizeImage)
+})
 
 defineExpose({
-    overlay,
-    mobileLayer,
-    desktopLayer,
-    crack,
-    interior,
-    frame,
-    glass,
-    randomizeImage,
+  randomizeImage,
+  overlay,
+  desktopLayer,
+  crack,
+  frame,
+  glass,
+  interior,
 })
 </script>
 
 <template>
-  <div ref="overlay" class="transition-overlay">
+  <div
+    ref="overlay"
+    class="transition-overlay"
+  >
+    <img
+      ref="crack"
+      :src="currentImage"
+      class="transition-crack cover"
+      draggable="false"
+    />
 
-    <div v-if="store.isMobile" ref="mobileLayer" class="transition-mobile">
+    <div
+      ref="desktopLayer"
+      class="transition-car"
+    >
       <img
-        ref="crack"
-        :src="currentImage"
-        class="ovrlay cover ovrlay-crack"
-      />
-    </div>
-
-    <div v-else ref="desktopLayer" class="transition-car">
-      <img 
         ref="interior"
-        :src="transitionCar_Interior"
-        class="ovrlay cover ovrlay-interior"
+        :src="transitionInterior"
+        class="transition-interior cover"
         draggable="false"
       />
 
       <img
         ref="frame"
-        :src="transitionCar_Transparent"
-        class="ovrlay cover ovrlay-frame"
-        draggable="false"
-      />
-
-      <img 
-        ref="glass"
-        :src="transitionCar_windshield"
-        class="ovrlay contain ovrlay-windshield"
+        :src="transitionCar"
+        class="transition-frame cover"
         draggable="false"
       />
 
       <img
-        ref="crack"
-        :src="currentImage"
-        class="ovrlay contain ovrlay-crack"
+        ref="glass"
+        :src="transitionGlass"
+        class="transition-glass contain"
         draggable="false"
       />
     </div>
@@ -93,18 +110,30 @@ defineExpose({
 
 <style scoped lang="scss">
 .transition-overlay {
-    position: fixed;
-    inset: 0;
+  position: fixed;
+  inset: 0;
 
-    width:100vw;
-    height:100vh;
+  width: 100vw;
+  height: 100vh;
 
-    overflow:hidden;
-    pointer-events:none;
-    z-index:9999;
+  overflow: hidden;
+  pointer-events: none;
+
+  z-index: 9999;
 }
 
-.ovrlay {
+.transition-car {
+  position: absolute;
+  inset: 0;
+
+  visibility: hidden;
+
+  z-index: 10;
+}
+
+.transition-frame,
+.transition-interior,
+.transition-glass {
   position: absolute;
   inset: 0;
 
@@ -119,18 +148,19 @@ defineExpose({
   will-change: transform, opacity;
 }
 
-.transition-mobile {
+.transition-crack {
   position: absolute;
-  inset: 0;
-  z-index: 20;
-  visibility: hidden;
-}
 
-.transition-car {
-  position: absolute;
-  inset: 0;
-  z-index: 10;
-  visibility: hidden;
+  left: 0;
+  top: 0;
+
+  width: 100vw;
+  height: 100vh;
+
+  object-fit: cover;
+
+  pointer-events: none;
+  user-select: none;
 }
 
 .cover {
@@ -141,29 +171,23 @@ defineExpose({
   object-fit: contain;
 }
 
-/* Frame stays put */
-
-.ovrlay-frame {
+.transition-frame {
   z-index: 3;
 }
 
-/* Visible only while windshield is removed */
-
-.ovrlay-interior {
+.transition-interior {
   z-index: 2;
   opacity: 0;
 }
 
-/* Clean windshield */
-
-.ovrlay-windshield {
+.transition-glass {
   z-index: 4;
 }
 
-.ovrlay-crack {
+.transition-crack {
   z-index: 1;
   opacity: 0;
+
   object-position: center;
-  mix-blend-mode: normal;
 }
 </style>

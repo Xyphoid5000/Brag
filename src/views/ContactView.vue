@@ -24,7 +24,6 @@ function submitContactForm(event: SubmitEvent) {
 <template>
   <div class="landing-page contact-page">
     <main class="contact-page__main">
-      <div class="contact-page__logo"><BurningRiverAutoGlassWordmark /></div>
       <div class="contact-page__heading">
         <p class="eyebrow"><span></span> Let's get you moving</p>
         <h1>Bring us the damage.<br><em>We'll bring the fix.</em></h1>
@@ -37,8 +36,6 @@ function submitContactForm(event: SubmitEvent) {
         <label><span>Message</span><textarea name="message" rows="5" required placeholder="Tell us what happened..."></textarea></label>
         <div class="contact-form__submit"><button class="button button--orange" type="submit">Send request <span>-></span></button><small>{{ formStatus || 'We will get back to you shortly.' }}</small></div>
       </form>
-      <IconBar />
     </main>
-    <footer class="landing-footer"><span>Burning River Auto Glass</span><span>Serving Cleveland and Northeast Ohio</span></footer>
   </div>
 </template>

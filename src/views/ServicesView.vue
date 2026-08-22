@@ -13,7 +13,6 @@
       </section>
       <section class="detail-callout"><p class="eyebrow"><span></span> Built for your day</p><h2>Mobile by design.<br><em>Careful by choice.</em></h2><p>Whether you have a stone chip, shattered door glass, or a damaged back glass, our friendly team brings the work to your doorstep.</p><RouterLink class="button button--quiet" to="/contact">Talk through your glass needs <span>-></span></RouterLink></section>
     </main>
-    <footer class="landing-footer"><span>Burning River Auto Glass</span><span>Serving Cleveland and Northeast Ohio</span></footer>
   </div>
 </template>
 

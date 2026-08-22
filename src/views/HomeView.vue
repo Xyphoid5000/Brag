@@ -37,15 +37,11 @@
           <p class="contact-band__copy">Ready for a clearer view? Tell us what happened and we'll help with the next step.</p>
           <RouterLink class="button button--orange mt-2" to="/contact">Get a free quote <span>-></span></RouterLink>
         </div>
-        <div class="home-contact__actions"><IconBar /></div>
       </section>
     </main>
-    <footer class="landing-footer"><span>Burning River Auto Glass</span><span>Serving Cleveland and Northeast Ohio</span></footer>
   </div>
 </template>
 
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
-import IconBar from '../components/IconBar.vue'
-
 </script>

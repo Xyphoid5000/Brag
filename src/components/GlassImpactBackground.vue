@@ -313,7 +313,7 @@ function createRestoreTimeline() {
     }, '<')
 
   restoreTrigger = ScrollTrigger.create({
-    trigger: document.documentElement,
+    trigger: '.glass-content',
     start: 'top top',
     end: 'bottom bottom',
     scrub: 1.1,
@@ -374,9 +374,6 @@ function showBrokenState() {
 async function setup() {
   buildShards()
   await nextTick()
-  await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
-  await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()))
-
 
   if (uiStore.animationPlayed || uiStore.isMobile) {
     createRestoreTimeline()
@@ -386,11 +383,14 @@ async function setup() {
     if (header) gsap.set(header, { opacity: 1 })
     const main = shell?.querySelector<HTMLElement>('.site-main')
     if (main) gsap.set(main, { opacity: 1 })
-    impactComplete.value = true
+    impactComplete.value = true;
     emit('ready')
+    setTimeout(() => {
+      uiStore.animationPlayed = true;
+    }, 500);
     return
   }
-
+ 
   animateImpact()
 }
 
@@ -414,6 +414,7 @@ watch(
 
 
 onMounted(() => {
+  uiStore.init()
   setup()
 })
 
