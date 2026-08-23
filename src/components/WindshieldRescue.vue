@@ -149,31 +149,12 @@ const resizeCanvas = () => {
     0
   )
 
-  /*
-   * Rebuild the road streaks when the canvas
-   * changes size so the perspective stays clean.
-   */
   createRoadStreaks()
 }
 
 /* -------------------------------------------------------
    WINDSHIELD GEOMETRY
 ------------------------------------------------------- */
-
-/*
- * The windshield in van_game.png is approximately:
- *
- *              13%              87%
- *                ┌──────────────┐
- *               /                \
- *              /                  \
- *             /                    \
- *            /                      \
- *           └────────────────────────┘
- *          3%                        97%
- *
- * It becomes wider toward the bottom.
- */
 
 const getWindshieldGeometry = () => {
   const top = canvasHeight * 0.13
@@ -276,27 +257,12 @@ const clipWindshield = () => {
    ROAD MOTION
 ------------------------------------------------------- */
 
-/*
- * Vanishing point of the road.
- *
- * This should line up roughly with where the
- * road disappears into the distance in
- * van_game.png.
- */
-
 const getRoadVanishingPoint = () => {
   return {
     x: canvasWidth * 0.5,
     y: canvasHeight * 0.315,
   }
 }
-
-/*
- * Create a collection of road streaks.
- *
- * These aren't literal road lines. They're subtle
- * perspective highlights that move toward the viewer.
- */
 
 const createRoadStreaks = () => {
   roadStreaks.length = 0
@@ -328,13 +294,6 @@ const createRoadStreaks = () => {
     })
   }
 }
-
-/*
- * Convert a streak's depth into an actual road position.
- *
- * As depth increases, the point moves from the
- * vanishing point toward the bottom of the road.
- */
 
 const getRoadPoint = (
   depth: number,
@@ -1319,6 +1278,8 @@ h1 {
 
   flex: 1;
 
+  min-height: 0;
+
   display: flex;
 
   align-items: center;
@@ -1351,12 +1312,7 @@ h1 {
     0 30px 80px
       rgba(0, 0, 0, 0.4),
     inset 0 0 80px
-      rgba(
-        255,
-        255,
-        255,
-        0.03
-      );
+      rgba(255, 255, 255, 0.03);
 }
 
 canvas {
@@ -1366,6 +1322,8 @@ canvas {
 
   width: 100%;
   height: 100%;
+
+  display: block;
 
   cursor: crosshair;
 
@@ -1377,13 +1335,15 @@ canvas {
 
   inset: 0;
 
+  z-index: 10;
+
   display: grid;
 
   place-items: center;
 
   padding: 1.5rem;
 
-  z-index: 10;
+  box-sizing: border-box;
 
   background:
     rgba(
@@ -1398,10 +1358,6 @@ canvas {
 }
 
 .game-card {
-  position: relative;
-
-  z-index: 11;
-
   width: min(
     430px,
     100%
@@ -1413,6 +1369,8 @@ canvas {
       4vw,
       3rem
     );
+
+  box-sizing: border-box;
 
   text-align: center;
 
@@ -1478,6 +1436,8 @@ canvas {
   padding:
     0.9rem
     1.25rem;
+
+  box-sizing: border-box;
 
   border-radius: 6px;
 
@@ -1572,13 +1532,12 @@ canvas {
 
 @media (max-width: 700px) {
   .windshield-game {
-    width: 100%;
-
+    width: 100vw;
     height: 100dvh;
 
     min-height: 0;
 
-    padding: 0.75rem;
+    padding: 0.5rem;
 
     box-sizing: border-box;
 
@@ -1591,11 +1550,11 @@ canvas {
     margin:
       0 0 0.5rem;
 
-    gap: 1rem;
+    flex-shrink: 0;
 
     align-items: center;
 
-    flex-shrink: 0;
+    gap: 1rem;
   }
 
   .eyebrow {
@@ -1619,29 +1578,40 @@ canvas {
   }
 
   /*
-   * Let the shell use only the space actually
-   * available beneath the header.
+   * This is the important part.
+   *
+   * The shell owns all remaining viewport space.
+   * min-height: 0 allows the flex item to actually
+   * shrink instead of forcing the page larger.
    */
   .game-shell {
     width: 100%;
 
-    flex: 1;
-
     min-width: 0;
     min-height: 0;
+
+    flex: 1;
 
     display: flex;
 
     align-items: center;
     justify-content: center;
+
+    overflow: hidden;
   }
 
   /*
-   * Keep the game 16:9, but NEVER allow it to
-   * exceed either dimension of the available area.
+   * Fit the entire 16:9 game inside the available
+   * width AND height.
+   *
+   * If the phone is short, the game gets smaller.
+   * If the phone is narrow, the game gets smaller.
+   *
+   * It will never extend outside .game-shell.
    */
   .windshield {
     width: 100%;
+    height: auto;
 
     max-width: 100%;
     max-height: 100%;
@@ -1650,116 +1620,128 @@ canvas {
 
     flex-shrink: 1;
 
-    border-radius: 12px;
+    overflow: hidden;
+
+    border-radius: 10px;
   }
 
   /*
-   * Keep the modal above the canvas.
+   * Keep the HTML overlay completely contained
+   * inside the scaled game.
    */
   .game-screen {
-    z-index: 20;
+    inset: 0;
 
-    padding: 0.75rem;
+    padding: 3%;
+
+    overflow: hidden;
   }
 
+  /*
+   * The modal itself scales down with the available
+   * game dimensions rather than being based on the
+   * phone's viewport width.
+   */
   .game-card {
     width: min(
-      360px,
-      92%
+      78%,
+      340px
     );
 
-    max-height: 90%;
-
     padding:
-      1.25rem
-      1rem;
+      clamp(
+        0.75rem,
+        3vw,
+        1.25rem
+      );
 
-    border-radius: 12px;
+    border-radius: 10px;
+  }
+
+  .game-card .eyebrow {
+    margin-bottom: 0.25rem;
+
+    font-size: clamp(
+      0.4rem,
+      1.4vw,
+      0.6rem
+    );
   }
 
   .game-card h2 {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
 
-    font-size: 1.5rem;
+    font-size: clamp(
+      1rem,
+      4vw,
+      1.5rem
+    );
+
+    line-height: 1.05;
   }
 
   .game-card p {
-    margin-bottom: 1rem;
+    margin-bottom: 0.65rem;
 
-    font-size: 0.85rem;
+    font-size: clamp(
+      0.55rem,
+      2vw,
+      0.8rem
+    );
 
-    line-height: 1.4;
+    line-height: 1.35;
+  }
+
+  .game-card .final-score {
+    margin:
+      0 0 0.4rem !important;
+
+    font-size: clamp(
+      1.75rem,
+      7vw,
+      2.5rem
+    ) !important;
+
+    line-height: 1;
   }
 
   .start-button,
   .quote-button {
     padding:
-      0.75rem
-      1rem;
+      clamp(
+        0.45rem,
+        2vw,
+        0.7rem
+      )
+      clamp(
+        0.6rem,
+        2.5vw,
+        1rem
+      );
 
-    font-size: 0.9rem;
+    font-size: clamp(
+      0.6rem,
+      2vw,
+      0.85rem
+    );
   }
 
-  .final-score {
-    margin-bottom: 0.75rem !important;
+  .quote-button {
+    margin-top: 0.4rem;
+  }
 
-    font-size: 2.5rem !important;
+  .high-score {
+    margin-top: 0.5rem;
+
+    font-size: clamp(
+      0.45rem,
+      1.5vw,
+      0.6rem
+    );
   }
 
   .game-footer {
     display: none;
-  }
-}
-
-/* -------------------------------------------------------
-   PORTRAIT PHONE
-------------------------------------------------------- */
-
-@media (
-  max-width: 700px
-) and (orientation: portrait) {
-  .windshield-game {
-    overflow: hidden;
-  }
-
-  /*
-   * The game isn't useful in portrait because
-   * its natural aspect ratio is 16:9.
-   *
-   * Instead of displaying a half-cut game,
-   * give the player a clear orientation prompt.
-   */
-  .windshield-game::before {
-    content:
-      "Rotate your phone to play";
-
-    position: fixed;
-
-    inset: 0;
-
-    z-index: 99999;
-
-    display: grid;
-
-    place-items: center;
-
-    width: 100vw;
-    height: 100dvh;
-
-    padding: 2rem;
-
-    box-sizing: border-box;
-
-    background: #111814;
-
-    color: #f4f2eb;
-
-    text-align: center;
-
-    font-size: 1.25rem;
-    font-weight: 700;
-
-    letter-spacing: 0.04em;
   }
 }
 </style>
