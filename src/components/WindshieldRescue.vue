@@ -8,9 +8,9 @@ import {
 import vanGame from "../assets/breakroom/van_game.png"
 import rockImage from "../assets/breakroom/rock.png"
 
-import glass01 from "../assets/glass01.png"
-import glass02 from "../assets/glass02.png"
-import glass03 from "../assets/glass03.png"
+import glass01 from "../assets/Glass01.png"
+import glass02 from "../assets/Glass02.png"
+import glass03 from "../assets/Glass03.png"
 import glass04 from "../assets/glass04.png"
 import glass05 from "../assets/glass05.png"
 
