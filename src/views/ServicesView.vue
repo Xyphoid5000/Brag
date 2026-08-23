@@ -11,11 +11,12 @@
         <article class="detail-card"><span class="detail-card__number">03 / STARTING AT $200</span><h2>Sensor calibration</h2><p>Many modern vehicles use cameras and sensors mounted around the windshield for features like lane keeping, forward collision alerts, and automatic emergency braking. When the windshield is replaced, these systems may need to be recalibrated to ensure they are properly aligned and operating as intended.</p><strong>Calibration available for ADAS-equipped vehicles</strong></article>
         <article class="detail-card"><span class="detail-card__number">04 / VARIABLE PRICING</span><h2>Heavy-equipment glass</h2><p>For construction, agriculture, and other heavy-duty applications, we measure and cut durable, safety-rated laminated glass on-site. Less downtime, a precise fit, and better visibility for operators.</p><strong>Measured and cut at your location</strong></article>
       </section>
-      <section class="detail-callout"><p class="eyebrow"><span></span> Built for your day</p><h2>Mobile by design.<br><em>Careful by choice.</em></h2><p>Whether you have a stone chip, shattered door glass, or a damaged back glass, our friendly team brings the work to your doorstep.</p><RouterLink class="button button--quiet" to="/contact">Talk through your glass needs <span>-></span></RouterLink></section>
+      <section class="detail-callout"><p class="eyebrow"><span></span> Built for your day</p><h2>Mobile by design.<br><em>Careful by choice.</em></h2><p>Whether you have a stone chip, shattered door glass, or a damaged back glass, our friendly team brings the work to your doorstep.</p><RouterLink class="button button--quiet" to="/contact">Talk through your glass needs <Icon class="button__icon" icon="material-symbols:play-arrow-outline-rounded" /></RouterLink></section>
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
+import { Icon } from '@iconify/vue'
 </script>

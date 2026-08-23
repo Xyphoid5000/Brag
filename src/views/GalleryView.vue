@@ -22,7 +22,7 @@
           <figcaption><span>03</span><strong>Made to fit</strong><small>Windshield, side, and rear glass.</small></figcaption>
         </figure>
         <figure class="gallery-card gallery-card--wide gallery-card--accent">
-          <div class="gallery-card__statement"><p class="eyebrow"><span></span> The Burning River standard</p><h2>Clear glass.<br><em>Clear answers.</em></h2><RouterLink class="button button--orange" to="/contact">Start your quote <span>-></span></RouterLink></div>
+          <div class="gallery-card__statement"><p class="eyebrow"><span></span> The Burning River standard</p><h2>Clear glass.<br><em>Clear answers.</em></h2><RouterLink class="button button--orange" to="/contact">Start your quote <Icon class="button__icon" icon="material-symbols:play-arrow-outline-rounded" /></RouterLink></div>
           <figcaption><span>04</span><strong>Built for the drive ahead</strong><small>North East Ohio, at your location.</small></figcaption>
         </figure>
         <BeforeAfterCard
@@ -52,6 +52,7 @@
 
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
+import { Icon } from "@iconify/vue"
 import BeforeAfterCard from '../components/BeforeAfterCard.vue'
 import before01 from '../assets/before01.jpg'
 import after01 from '../assets/after01.jpg'

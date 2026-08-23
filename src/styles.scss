@@ -87,9 +87,9 @@ body { min-width: 320px; margin: 0; overflow-x: hidden; background: radial-gradi
   .landing-nav__links { display: none; }
   .landing-nav__menu-button { display: flex; width: 38px; height: 38px; flex-direction: column; align-items: center; justify-content: flex-end; gap: 5px; padding: 0; border: 1px solid rgba(181, 193, 202, .48); background: rgba(8, 18, 31, .72); cursor: pointer;}
   .landing-nav__menu-button span { display: block; width: 15 px; height: 1px; background: #eef2f4;}
-  .landing-nav__mobile {position: absolute; z-index: 30; top: 100%; right: 4px; left: 35vw; display: grid; padding: 10px 0; border: 1px solid rgba(181, 193, 202, .28); background: #020202cc; backdrop-filter: blur(12px); box-shadow: 0 18px 40px rgba(0,0,0, .3); }
+  .landing-nav__mobile {position: absolute; z-index: 30; top: 100%; right: 4px; left: 35vw; display: grid; padding: 10px 0; border: 1px solid rgba(181, 193, 202, .28); background-color: #0202026b; backdrop-filter: blur(12px); box-shadow: 0 18px 40px rgba(0,0,0, .3); }
   .landing-nav__mobile a { padding: 16px 20px; color: $silver; font-size: .78rem; font-weight: 900; letter-spacing: 1em; text-decoration: none; text-transform: uppercase; }
-  .landing-nav__mobile .router-link-active {background: $orange; color: #020202cc;}
+  .landing-nav__mobile .router-link-active {background: $orange; color: #0202026b; }
   .landing-nav__phone { display: none }
   .hero-panel { align-items: start; flex-direction: column; justify-content: end; min-height: 82vh; padding-top: 120px; }
   .hero-panel h1 { font-size: 4.1rem; }
@@ -220,3 +220,9 @@ $spacers: (
   }
 }
 
+.button__icon {
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}

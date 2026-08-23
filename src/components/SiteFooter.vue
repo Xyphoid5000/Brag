@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import IconBar from "./IconBar.vue"
-import logo from "../assets/FadedBREmblem.png"
+import { useUIStore } from "../stores/uiStore.ts"
+
+const store = useUIStore();
 
 const navigation = [
   { label: "Home", to: "/" },
@@ -14,7 +16,7 @@ const year = new Date().getFullYear()
 </script>
 
 <template>
-  <footer class="site-footer">
+  <footer class="site-footer" :class="{ 'mobile': store.isMobile }"">
     <div class="footer-container">
 
       <!-- Main Footer -->
@@ -22,10 +24,6 @@ const year = new Date().getFullYear()
 
         <!-- Brand -->
         <div class="footer-brand">
-          <RouterLink to="/" class="footer-logo">
-            <img :src="logo" alt="Burning River Auto Glass" />
-          </RouterLink>
-
           <div class="brand-copy">
             <h2>
               Burning River
@@ -91,12 +89,16 @@ const year = new Date().getFullYear()
   </footer>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .site-footer {
   position: relative;
   color: #f2f1eb;
   overflow: hidden;
-    background: rgba(8, 18, 31, 0.44);
+  background-color: #0202026b;
+  
+    &.mobile {
+        min-height: 100vh;
+    }
 }
 
 .site-footer::before {
@@ -119,17 +121,17 @@ const year = new Date().getFullYear()
   position: relative;
   z-index: 1;
   max-width: 1200px;
-  margin: 0 auto;
-  padding: 70px 32px 24px;
+  margin: auto;
+  padding: 2rem 3rem;
 }
 
 /* Main */
 
 .footer-main {
   display: grid;
-  grid-template-columns: 2fr 1fr 1.4fr;
+  grid-template-columns: 2fr 1fr 1fr;
   gap: 70px;
-  padding-bottom: 30px;
+  margin-bottom: 1rem;
 }
 
 /* Brand */
@@ -138,18 +140,6 @@ const year = new Date().getFullYear()
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-}
-
-.footer-logo {
-  display: block;
-  width: 70px;
-  margin-bottom: 20px;
-}
-
-.footer-logo img {
-  display: block;
-  width: 100%;
-  height: auto;
 }
 
 .brand-copy h2 {
@@ -271,23 +261,14 @@ const year = new Date().getFullYear()
 }
 
 @media (max-width: 520px) {
-  .footer-container {
-    padding: 55px 24px 20px;
-  }
-
   .footer-main {
     grid-template-columns: 1fr;
-    gap: 38px;
+    gap: 1rem;
     padding-bottom: 45px;
   }
 
   .footer-brand {
     grid-column: auto;
-  }
-
-  .footer-bottom {
-    flex-direction: column;
-    align-items: flex-start;
   }
 }
 </style>

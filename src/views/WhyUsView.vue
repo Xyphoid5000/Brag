@@ -14,11 +14,12 @@
         <article><span class="detail-card__number">02</span><h2>Family owned and operated</h2><p>You do not need to sound fancy with us. We explain what matters, answer the real question, and treat your vehicle like it matters because it does.</p></article>
         <article><span class="detail-card__number">03</span><h2>We dont brag. Our work does.</h2><p>Replacement work includes a limited-lifetime warranty against workmanship and material defects, giving you confidence after the glass is in.</p></article>
       </section>
-      <section class="detail-callout detail-callout--why"><p class="eyebrow"><span></span> North East Ohio roots</p><h2>Your story matters.<br><em>So does your safety.</em></h2><p>From a single stone chip to a shattered door glass, we are here to make the next step feel straightforward.</p><RouterLink class="button button--orange" to="/contact">Let's give you something to brag about <span>-></span></RouterLink></section>
+      <section class="detail-callout detail-callout--why"><p class="eyebrow"><span></span> North East Ohio roots</p><h2>Your story matters.<br><em>So does your safety.</em></h2><p>From a single stone chip to a shattered door glass, we are here to make the next step feel straightforward.</p><RouterLink class="button button--orange" to="/contact">Let's give you something to brag about <Icon class="button__icon" icon="material-symbols:play-arrow-outline-rounded" /></RouterLink></section>
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
+import { Icon } from '@iconify/vue'
 </script>
