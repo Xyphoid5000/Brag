@@ -375,7 +375,7 @@ async function setup() {
   buildShards()
   await nextTick()
 
-  if (uiStore.animationPlayed || uiStore.isMobile) {
+  if (uiStore.animationPlayed || uiStore.isMobile || route.name === "breakroom") {
     createRestoreTimeline()
     showBrokenState()
     const { header, shell } = getHeaderTargets()
