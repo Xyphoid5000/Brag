@@ -343,11 +343,6 @@ const getRoadPoint = (
   const vanishing =
     getRoadVanishingPoint()
 
-  /*
-   * The road gets substantially wider as it
-   * approaches the viewer.
-   */
-
   const bottomY =
     canvasHeight * 0.72
 
@@ -359,20 +354,12 @@ const getRoadPoint = (
     ) *
       depth
 
-  /*
-   * Width of the road at this depth.
-   */
-
   const roadHalfWidth =
     canvasWidth *
     (
       0.025 +
       depth * 0.46
     )
-
-  /*
-   * Keep streaks mostly on the actual road.
-   */
 
   const x =
     vanishing.x +
@@ -391,10 +378,6 @@ const updateRoadStreaks = (
   for (
     const streak of roadStreaks
   ) {
-    /*
-     * Motion gets faster toward the viewer.
-     */
-
     const speedMultiplier =
       0.8 +
       streak.depth * 1.8
@@ -403,10 +386,6 @@ const updateRoadStreaks = (
       streak.speed *
       speedMultiplier *
       delta
-
-    /*
-     * Respawn at the horizon.
-     */
 
     if (
       streak.depth >= 1
@@ -443,12 +422,6 @@ const drawRoadMotion = () => {
   const vanishing =
     getRoadVanishingPoint()
 
-  /*
-   * The road itself is already present in the
-   * background image. We're only adding motion
-   * highlights.
-   */
-
   for (
     const streak of roadStreaks
   ) {
@@ -458,20 +431,11 @@ const drawRoadMotion = () => {
         streak.offset
       )
 
-    /*
-     * Don't show much motion at the horizon.
-     */
-
     const visibility =
       Math.min(
         1,
         streak.depth * 3
       )
-
-    /*
-     * Streaks become longer as they approach
-     * the viewer.
-     */
 
     const length =
       streak.length *
@@ -480,11 +444,6 @@ const drawRoadMotion = () => {
         0.4 +
         streak.depth * 2.8
       )
-
-    /*
-     * Direction follows the perspective lines
-     * back toward the vanishing point.
-     */
 
     const dx =
       point.x -
@@ -506,11 +465,6 @@ const drawRoadMotion = () => {
     const directionY =
       dy / distance
 
-    /*
-     * Start slightly behind the current position
-     * and extend toward the viewer.
-     */
-
     const startX =
       point.x -
       directionX * length
@@ -518,11 +472,6 @@ const drawRoadMotion = () => {
     const startY =
       point.y -
       directionY * length
-
-    /*
-     * Road motion should fade at the very beginning
-     * and end of the streak.
-     */
 
     const alpha =
       streak.opacity *
@@ -543,11 +492,6 @@ const drawRoadMotion = () => {
         0.5 +
         streak.depth * 1.5
       )
-
-    /*
-     * A soft neutral highlight rather than
-     * a bright white arcade-game streak.
-     */
 
     ctx.strokeStyle =
       "rgba(220, 214, 190, 0.75)"
@@ -630,10 +574,6 @@ const spawnRock = () => {
   const geometry =
     getWindshieldGeometry()
 
-  /*
-   * Rocks begin near the road/horizon.
-   */
-
   const startY =
     canvasHeight * 0.28
 
@@ -657,11 +597,6 @@ const spawnRock = () => {
         startBounds.left -
         startPadding * 2
       )
-
-  /*
-   * Impact can happen anywhere on the
-   * windshield glass.
-   */
 
   const targetY =
     geometry.top +
@@ -951,48 +886,19 @@ const draw = () => {
     canvasHeight
   )
 
-  /*
-   * 1. Complete van interior.
-   */
-
   drawBackground()
-
-  /*
-   * 2. Everything below is restricted
-   *    to the windshield.
-   */
 
   ctx.save()
 
   clipWindshield()
 
-  /*
-   * 3. Road movement.
-   *
-   * This is deliberately BEFORE the rocks,
-   * so the rocks appear to be coming toward
-   * the moving vehicle.
-   */
-
   drawRoadMotion()
-
-  /*
-   * 4. Rocks.
-   */
 
   rocks.forEach(
     drawRock
   )
 
-  /*
-   * 5. Windshield damage.
-   */
-
   drawCracks()
-
-  /*
-   * 6. Restore the canvas.
-   */
 
   ctx.restore()
 }
@@ -1051,10 +957,6 @@ const handlePointer = (
   ) {
     return
   }
-
-  /*
-   * Check the closest/front-most rock first.
-   */
 
   for (
     let i = rocks.length - 1;
@@ -1128,20 +1030,12 @@ const gameLoop = (
 
   lastTime = time
 
-  /*
-   * Road movement runs continuously.
-   */
-
   updateRoadStreaks(
     delta
   )
 
   spawnTimer +=
     delta
-
-  /*
-   * Rocks spawn progressively faster.
-   */
 
   const spawnRate =
     Math.max(
@@ -1188,12 +1082,6 @@ onMounted(() => {
     resizeCanvas
   )
 
-  /*
-   * Mobile browsers don't always fire a normal
-   * resize event at exactly the point the orientation
-   * changes, so explicitly listen for it as well.
-   */
-
   window.addEventListener(
     "orientationchange",
     resizeCanvas
@@ -1221,32 +1109,6 @@ onBeforeUnmount(() => {
 
 <template>
   <section class="windshield-game">
-    <!--
-      Portrait mobile overlay.
-      It sits above the entire game so the
-      canvas can never cover the message.
-    -->
-    <div class="rotate-device">
-      <div class="rotate-card">
-        <span class="rotate-icon">
-          ↻
-        </span>
-
-        <span class="eyebrow">
-          WINDSHIELD RESCUE
-        </span>
-
-        <h2>
-          Rotate your phone
-        </h2>
-
-        <p>
-          This game is best played
-          in landscape.
-        </p>
-      </div>
-    </div>
-
     <div class="game-header">
       <div>
         <span class="eyebrow">
@@ -1276,7 +1138,6 @@ onBeforeUnmount(() => {
           @pointerdown="handlePointer"
         />
 
-        <!-- Start screen -->
         <div
           v-if="
             !gameStarted &&
@@ -1312,7 +1173,6 @@ onBeforeUnmount(() => {
           </div>
         </div>
 
-        <!-- Game over -->
         <div
           v-if="gameOver"
           class="game-screen"
@@ -1366,21 +1226,17 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .windshield-game {
-  min-height: 100dvh;
+  min-height: 100vh;
 
   padding:
     3rem
     clamp(1rem, 4vw, 4rem);
-
-  box-sizing: border-box;
 
   background: #111814;
   color: #f4f2eb;
 
   display: flex;
   flex-direction: column;
-
-  overflow: hidden;
 }
 
 .game-header {
@@ -1399,8 +1255,6 @@ onBeforeUnmount(() => {
   justify-content: space-between;
 
   gap: 2rem;
-
-  flex-shrink: 0;
 }
 
 .eyebrow {
@@ -1414,8 +1268,6 @@ onBeforeUnmount(() => {
   font-weight: 800;
 
   letter-spacing: 0.18em;
-
-  text-transform: uppercase;
 }
 
 h1 {
@@ -1432,8 +1284,6 @@ h1 {
 
 .score {
   text-align: right;
-
-  flex-shrink: 0;
 }
 
 .score span,
@@ -1468,8 +1318,6 @@ h1 {
   margin: 0 auto;
 
   flex: 1;
-
-  min-height: 0;
 
   display: flex;
 
@@ -1519,8 +1367,6 @@ canvas {
   width: 100%;
   height: 100%;
 
-  display: block;
-
   cursor: crosshair;
 
   touch-action: none;
@@ -1531,15 +1377,13 @@ canvas {
 
   inset: 0;
 
-  z-index: 10;
-
   display: grid;
 
   place-items: center;
 
   padding: 1.5rem;
 
-  box-sizing: border-box;
+  z-index: 10;
 
   background:
     rgba(
@@ -1563,20 +1407,12 @@ canvas {
     100%
   );
 
-  max-height: calc(
-    100% - 1rem
-  );
-
-  box-sizing: border-box;
-
   padding:
     clamp(
       1.5rem,
       4vw,
       3rem
     );
-
-  overflow-y: auto;
 
   text-align: center;
 
@@ -1596,7 +1432,7 @@ canvas {
       17,
       24,
       20,
-      0.92
+      0.88
     );
 
   box-shadow:
@@ -1638,8 +1474,6 @@ canvas {
   display: block;
 
   width: 100%;
-
-  box-sizing: border-box;
 
   padding:
     0.9rem
@@ -1730,16 +1564,6 @@ canvas {
   text-transform: uppercase;
 
   letter-spacing: 0.06em;
-
-  flex-shrink: 0;
-}
-
-/* -------------------------------------------------------
-   ROTATE DEVICE MESSAGE
-------------------------------------------------------- */
-
-.rotate-device {
-  display: none;
 }
 
 /* -------------------------------------------------------
@@ -1748,12 +1572,15 @@ canvas {
 
 @media (max-width: 700px) {
   .windshield-game {
-    min-height: 100dvh;
+    width: 100%;
 
     height: 100dvh;
 
-    padding:
-      0.75rem;
+    min-height: 0;
+
+    padding: 0.75rem;
+
+    box-sizing: border-box;
 
     overflow: hidden;
   }
@@ -1792,45 +1619,43 @@ canvas {
   }
 
   /*
-   * The game shell gets all remaining vertical
-   * space after the compact header.
+   * Let the shell use only the space actually
+   * available beneath the header.
    */
-
   .game-shell {
     width: 100%;
 
-    height:
-      calc(
-        100dvh - 3.75rem
-      );
-
     flex: 1;
 
+    min-width: 0;
     min-height: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
   }
 
   /*
-   * Landscape mobile:
-   *
-   * Keep the actual game at 16:9 while making
-   * sure it cannot become taller than the phone.
+   * Keep the game 16:9, but NEVER allow it to
+   * exceed either dimension of the available area.
    */
-
   .windshield {
-    width: min(
-      100%,
-      calc(
-        (100dvh - 3.75rem) * 1.7777778
-      )
-    );
+    width: 100%;
 
     max-width: 100%;
+    max-height: 100%;
 
     aspect-ratio: 16 / 9;
+
+    flex-shrink: 1;
 
     border-radius: 12px;
   }
 
+  /*
+   * Keep the modal above the canvas.
+   */
   .game-screen {
     z-index: 20;
 
@@ -1893,7 +1718,21 @@ canvas {
 @media (
   max-width: 700px
 ) and (orientation: portrait) {
-  .rotate-device {
+  .windshield-game {
+    overflow: hidden;
+  }
+
+  /*
+   * The game isn't useful in portrait because
+   * its natural aspect ratio is 16:9.
+   *
+   * Instead of displaying a half-cut game,
+   * give the player a clear orientation prompt.
+   */
+  .windshield-game::before {
+    content:
+      "Rotate your phone to play";
+
     position: fixed;
 
     inset: 0;
@@ -1904,96 +1743,23 @@ canvas {
 
     place-items: center;
 
-    box-sizing: border-box;
-
     width: 100vw;
     height: 100dvh;
 
-    padding: 1.5rem;
+    padding: 2rem;
+
+    box-sizing: border-box;
 
     background: #111814;
 
     color: #f4f2eb;
 
     text-align: center;
-  }
 
-  .rotate-card {
-    width: min(
-      340px,
-      100%
-    );
+    font-size: 1.25rem;
+    font-weight: 700;
 
-    box-sizing: border-box;
-
-    padding:
-      2rem
-      1.5rem;
-
-    border:
-      1px solid
-      rgba(
-        255,
-        255,
-        255,
-        0.12
-      );
-
-    border-radius: 14px;
-
-    background:
-      rgba(
-        255,
-        255,
-        255,
-        0.03
-      );
-
-    box-shadow:
-      0 25px 70px
-        rgba(
-          0,
-          0,
-          0,
-          0.35
-        );
-  }
-
-  .rotate-icon {
-    display: block;
-
-    margin-bottom: 1rem;
-
-    font-size: 3rem;
-
-    line-height: 1;
-
-    color: #718d78;
-  }
-
-  .rotate-card .eyebrow {
-    margin-bottom: 0.5rem;
-  }
-
-  .rotate-card h2 {
-    margin:
-      0 0 0.75rem;
-
-    font-size: 1.7rem;
-  }
-
-  .rotate-card p {
-    margin: 0;
-
-    color:
-      rgba(
-        244,
-        242,
-        235,
-        0.6
-      );
-
-    line-height: 1.5;
+    letter-spacing: 0.04em;
   }
 }
 </style>
