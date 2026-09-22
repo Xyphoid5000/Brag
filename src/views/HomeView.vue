@@ -8,8 +8,8 @@
           <h1>Clear view.<br><em>Solid</em> protection.</h1>
           <p class="hero-panel__lead">Windshield repair and auto glass replacement with the precision your drive deserves.</p>
           <div class="hero-panel__actions">
-            <RouterLink class="button button--orange" to="/contact">Get a free quote <Icon class="button__icon" icon="material-symbols:play-arrow-outline-rounded" /></RouterLink>
-            <a class="button button--quiet" href="#services">Explore services <Icon class="button__icon" icon="iconamoon:arrow-down-2-light" color="#FF6A00" /></a>
+            <RouterLink class="button button--orange" to="/contact">Get a free quote <Icon class="button__icon" :icon="playArrowIcon" /></RouterLink>
+            <a class="button button--quiet" href="#services">Explore services <Icon class="button__icon" :icon="arrowDownIcon" color="#FF6A00" /></a>
           </div>
         </div>
         <div class="hero-panel__signal"><span class="signal-dot"></span><span>Ready when the road calls</span></div>
@@ -35,7 +35,7 @@
           <p class="eyebrow"><span></span> Let's get you moving</p>
           <h2>Bring us the damage.<br>We'll bring the fix.</h2>
           <p class="contact-band__copy">Ready for a clearer view? Tell us what happened and we'll help with the next step.</p>
-          <RouterLink class="button button--orange mt-2" to="/contact">Get a free quote <Icon class="button__icon" icon="material-symbols:play-arrow-outline-rounded" /></RouterLink>
+          <RouterLink class="button button--orange mt-2" to="/contact">Get a free quote <Icon class="button__icon" :icon="playArrowIcon" /></RouterLink>
         </div>
       </section>
     </main>
@@ -45,4 +45,6 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import { Icon } from '@iconify/vue'
+import playArrowIcon from '@iconify-icons/material-symbols/play-arrow-outline-rounded'
+import arrowDownIcon from '@iconify-icons/iconamoon/arrow-down-2-light'
 </script>

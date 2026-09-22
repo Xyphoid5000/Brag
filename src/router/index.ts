@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router"
 
-import ContactView from "../views/ContactView.vue"
-import GalleryView from "../views/GalleryView.vue"
-import HomeView from "../views/HomeView.vue"
-import ServicesView from "../views/ServicesView.vue"
-import WhyUsView from "../views/WhyUsView.vue"
+const ContactView = () => import("../views/ContactView.vue")
+const GalleryView = () => import("../views/GalleryView.vue")
+const HomeView = () => import("../views/HomeView.vue")
+const ServicesView = () => import("../views/ServicesView.vue")
+const WhyUsView = () => import("../views/WhyUsView.vue")
 
 import {
   cover,

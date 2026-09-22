@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { Icon } from "@iconify/vue";
+import facebookIcon from "@iconify-icons/simple-icons/facebook";
+import yelpIcon from "@iconify-icons/simple-icons/yelp";
+import youtubeIcon from "@iconify-icons/simple-icons/youtube";
 
 interface Props {
   size?: number;
@@ -14,19 +17,19 @@ const props = withDefaults(defineProps<Props>(), {
 
 const icons = computed(() => [
   {
-    icon: "simple-icons:facebook",
+    icon: facebookIcon,
     href: "https://www.facebook.com/profile.php?id=61560531697293",
     label: "Facebook",
     color: "#1877F2",
   },
   {
-    icon: "simple-icons:yelp",
+    icon: yelpIcon,
     href: "https://www.yelp.com/biz/burning-river-auto-glass-garrettsville",
     label: "Yelp",
     color: "#D32323",
   },
   {
-    icon: "simple-icons:youtube",
+    icon: youtubeIcon,
     href: "https://www.youtube.com/@burningriverautoglass",
     label: "YouTube",
     color: "#FF0000"

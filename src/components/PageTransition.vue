@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue"
 
-import glass01 from "../assets/Glass01.png"
-import glass02 from "../assets/Glass02.png"
-import glass03 from "../assets/Glass03.png"
-import glass04 from "../assets/glass04.png"
-import glass05 from "../assets/glass05.png"
+import glass01 from "../assets/Glass01.webp"
+import glass02 from "../assets/Glass02.webp"
+import glass03 from "../assets/Glass03.webp"
+import glass04 from "../assets/glass04.webp"
+import glass05 from "../assets/glass05.webp"
 
-import transitionCar from "../assets/transitionCar_transparent.png"
-import transitionInterior from "../assets/transitionCar_Interior.png"
-import transitionGlass from "../assets/transitionCar_windshieldAligned.png"
+import transitionCar from "../assets/transitionCar_transparent.webp"
+import transitionInterior from "../assets/transitionCar_Interior.webp"
+import transitionGlass from "../assets/transitionCar_windshieldAligned.webp"
 
 import {
   registerTransitionElements,
@@ -74,6 +74,7 @@ defineExpose({
     class="transition-overlay"
   >
     <img
+      decoding="async"
       ref="crack"
       :src="currentImage"
       class="transition-crack cover"
@@ -85,6 +86,7 @@ defineExpose({
       class="transition-car"
     >
       <img
+        decoding="async"
         ref="interior"
         :src="transitionInterior"
         class="transition-interior cover"
@@ -92,6 +94,7 @@ defineExpose({
       />
 
       <img
+        decoding="async"
         ref="frame"
         :src="transitionCar"
         class="transition-frame cover"
@@ -99,6 +102,7 @@ defineExpose({
       />
 
       <img
+        decoding="async"
         ref="glass"
         :src="transitionGlass"
         class="transition-glass cover"

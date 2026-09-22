@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import logoUrl from '../assets/BRText.png'
+import logoUrl from '../assets/BRText.webp'
 </script>
 
 <template>
