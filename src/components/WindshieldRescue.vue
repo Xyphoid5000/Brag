@@ -5,14 +5,14 @@ import {
   ref,
 } from "vue"
 
-import vanGame from "../assets/breakroom/van_game.png"
-import rockImage from "../assets/breakroom/rock.png"
+import vanGame from "../assets/breakroom/van_game.webp"
+import rockImage from "../assets/breakroom/rock.webp"
 
-import glass01 from "../assets/Glass01.png"
-import glass02 from "../assets/Glass02.png"
-import glass03 from "../assets/Glass03.png"
-import glass04 from "../assets/glass04.png"
-import glass05 from "../assets/glass05.png"
+import glass01 from "../assets/Glass01.webp"
+import glass02 from "../assets/Glass02.webp"
+import glass03 from "../assets/Glass03.webp"
+import glass04 from "../assets/glass04.webp"
+import glass05 from "../assets/glass05.webp"
 
 interface Rock {
   id: number

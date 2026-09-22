@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import logoUrl from '../assets/FadedBREmblem.png'
+import logoUrl from '../assets/FadedBREmblem.webp'
 </script>
 
 <template>

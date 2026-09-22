@@ -13,7 +13,7 @@ const showingAfter = ref(false)
 <template>
   <figure class="before-after-card" :class="{ 'before-after-card--after': showingAfter }">
     <button class="before-after-card__image" type="button" :aria-label="`Show ${showingAfter ? 'before' : 'after'} image for ${title}`" @click="showingAfter = !showingAfter">
-      <img :src="showingAfter ? after : before" :alt="`${title} ${showingAfter ? 'after' : 'before'} view`" />
+      <img loading="lazy" decoding="async" :src="showingAfter ? after : before" :alt="`${title} ${showingAfter ? 'after' : 'before'} view`" />
       <span class="before-after-card__state">{{ showingAfter ? 'After' : 'Before' }}</span>
       <span class="before-after-card__toggle">{{ showingAfter ? 'View before' : 'View after' }} <b>-></b></span>
     </button>
