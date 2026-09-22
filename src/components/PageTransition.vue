@@ -9,7 +9,7 @@ import glass05 from "../assets/glass05.png"
 
 import transitionCar from "../assets/transitionCar_transparent.png"
 import transitionInterior from "../assets/transitionCar_Interior.png"
-import transitionGlass from "../assets/transitionCar_windshieldAlt.png"
+import transitionGlass from "../assets/transitionCar_windshieldAligned.png"
 
 import {
   registerTransitionElements,
@@ -101,7 +101,7 @@ defineExpose({
       <img
         ref="glass"
         :src="transitionGlass"
-        class="transition-glass contain"
+        class="transition-glass cover"
         draggable="false"
       />
     </div>
@@ -165,10 +165,6 @@ defineExpose({
 
 .cover {
   object-fit: cover;
-}
-
-.contain {
-  object-fit: contain;
 }
 
 .transition-frame {

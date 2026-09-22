@@ -29,8 +29,8 @@ body { min-width: 320px; margin: 0; overflow-x: hidden; background: radial-gradi
 .glass-scene__pane-edge { position: absolute; z-index: 4; inset: 0; border: 1px solid rgba(255,255,255,.58); border-right-color: rgba(107,161,153,.3); border-bottom-color: rgba(55,103,98,.25); box-shadow: inset 0 1px 0 rgba(255,255,255,.36), inset 1px 0 0 rgba(255,255,255,.2), inset -2px -3px 8px rgba(28,87,81,.08), 0 0 18px rgba(255,255,255,.16); opacity: .78; mix-blend-mode: screen; }
 .glass-scene__pane-sheen, .glass-scene__pane-edge { pointer-events: none; }
 .glass-scene__svg { position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.glass-pane { fill: rgba(130,164,176,.32); stroke: rgba(224,235,238,.86); stroke-width: .28; filter: drop-shadow(0 18px 24px rgba(3,10,18,.4)); transform-origin: 50% 44%; }
-.glass-shard { fill: rgba(153,188,198,.3); stroke: rgba(220,235,238,.86); stroke-width: .14; stroke-opacity: 1; opacity: 0; transform-box: fill-box; transform-origin: center; filter: drop-shadow(0 7px 7px rgba(3,10,18,.24)); }
+.glass-pane { fill: rgba(130,164,176,.32); stroke: rgba(224,235,238,.86); stroke-width: .28; transform-origin: 50% 44%; }
+.glass-shard { fill: rgba(153,188,198,.3); stroke: rgba(220,235,238,.86); stroke-width: .14; stroke-opacity: 1; opacity: 0; transform-box: fill-box; transform-origin: center; }
 .glass-shard--small { fill: rgba(191,211,215,.38); stroke-width: .13; }
 .glass-scene--ready .glass-scene__wash { background: linear-gradient(180deg, rgba(36,59,76,.28), rgba(7,18,30,.2)); }
 .glass-scene--restoring .glass-scene__svg { z-index: 3; }
@@ -39,13 +39,14 @@ body { min-width: 320px; margin: 0; overflow-x: hidden; background: radial-gradi
 .impact-sparks .logo-piece, .impact-spash .logo-piece { width: 100%; height: 100%; }
 .impact-sparks .logo-piece { transform: scale(.72); transform-origin: 50% 75%; }
 .impact-spash .logo-piece { transform-origin: 50% 100%; }
-.burning-logo, .faded-logo { position: absolute; z-index: 6; top: 44%; left: 50%; height: 20rem; transform: translate(-50%, -50%); }
+.burning-logo { position: absolute; z-index: 6; top: 44%; left: 50%; height: 20rem; aspect-ratio: 2 / 3; transform: translate(-50%, -50%); will-change: transform; }
+.faded-logo { position: absolute; z-index: 6; top: 44%; left: 50%; height: 20rem; aspect-ratio: 2 / 3; transform: translate(-50%, -50%); }
 .faded-logo { opacity: 0; }
 .restore-logo { position: absolute; z-index: 1; top: 50%; left: 50%; width: 100%; height: 100%; transform: translate(-50%, -50%); display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0 } .restore-emblem {height: 20rem;}
 
 
 .logo-piece { display: block; width: 100%; height: 100%; overflow: hidden; clip-path: inset(0); }
-.full-wordmark { position: absolute; z-index: 6; bottom: 25%; left: 50%; width: min(68vw, 560px); transform: translateX(-50%); }
+.full-wordmark { position: absolute; z-index: 6; bottom: 25%; left: 50%; width: min(68vw, 560px); transform: translateX(-50%); will-change: transform; }
 .full-wordmark .logo-piece { height: auto; }
 
 .site-shell { 

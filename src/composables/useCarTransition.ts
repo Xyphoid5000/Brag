@@ -342,13 +342,13 @@ function buildPostTimeline() {
 
   tl.to(glass, {
     x: 0,
-    y: -50,
+    y: 0,
 
     rotation: 0,
     rotationX: 0,
     rotationY: 0,
 
-    scale: 1.1,
+    scale: 1,
 
     opacity: 1,
 

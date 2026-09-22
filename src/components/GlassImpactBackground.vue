@@ -24,6 +24,8 @@ const impactComplete = ref(false)
 
 let restoreTrigger: ScrollTrigger | null = null
 let introTimeline: gsap.core.Timeline | null = null
+let readyFired = false
+let watchdogId: number | undefined
 
 const IMPACT_X = 50
 const IMPACT_Y = 44
@@ -189,9 +191,9 @@ async function animateImpact() {
 
   if (!glass || !logo || !fullWordmark) return
 
-  gsap.set(logo, { y: -1000, scale: 0.82, rotation: -4, opacity: 1 })
+  gsap.set(logo, { xPercent: -50, yPercent: -50, x: 0, y: -1000, scale: 0.82, rotation: -4, opacity: 1 })
   gsap.set(allShardElements, { opacity: 0, strokeOpacity: 0 })
-  gsap.set(fullWordmark, { y: -200, scale: 1, opacity: 0})
+  gsap.set(fullWordmark, { xPercent: -50, x: 0, y: -200, scale: 1, opacity: 0})
   gsap.set(paneLighting, { opacity: 0.78 })
   if (shell) gsap.set(shell, { opacity: 0 })
 
@@ -264,10 +266,9 @@ async function animateImpact() {
   await runHeaderFlip()
 
   uiStore.animationPlayed = true;
-  impactComplete.value = true
-  emit('ready')
   await nextTick()
   createRestoreTimeline()
+  markReady()
 }
 
 function createRestoreTimeline() {
@@ -371,20 +372,50 @@ function showBrokenState() {
   impactComplete.value = true
 }
 
+function revealSite() {
+  const { header, shell } = getHeaderTargets()
+  if (shell) gsap.set(shell, { opacity: 1, pointerEvents: 'auto' })
+  if (header) gsap.set(header, { opacity: 1 })
+  const main = shell?.querySelector<HTMLElement>('.site-main')
+  if (main) gsap.set(main, { opacity: 1 })
+}
+
+function markReady() {
+  if (readyFired) return
+  readyFired = true
+  if (watchdogId !== undefined) {
+    clearTimeout(watchdogId)
+    watchdogId = undefined
+  }
+  impactComplete.value = true
+  emit('ready')
+}
+
+// Safety net: if the intro animation stalls (e.g. a low-power device can't
+// keep up with it), never leave the site hidden and uninteractable. Snap to
+// the finished state instead.
+function forceComplete() {
+  if (readyFired) return
+  introTimeline?.kill()
+  introTimeline = null
+  showBrokenState()
+  revealSite()
+  createRestoreTimeline()
+  uiStore.animationPlayed = true
+  markReady()
+}
+
 async function setup() {
   buildShards()
   await nextTick()
 
-  if (uiStore.animationPlayed || uiStore.isMobile || route.name === "breakroom") {
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  if (uiStore.animationPlayed || uiStore.isMobile || prefersReducedMotion || route.name === "breakroom") {
     createRestoreTimeline()
     showBrokenState()
-    const { header, shell } = getHeaderTargets()
-    if (shell) gsap.set(shell, { opacity: 1, pointerEvents: 'auto' })
-    if (header) gsap.set(header, { opacity: 1 })
-    const main = shell?.querySelector<HTMLElement>('.site-main')
-    if (main) gsap.set(main, { opacity: 1 })
-    impactComplete.value = true;
-    emit('ready')
+    revealSite()
+    markReady()
     setTimeout(() => {
       uiStore.animationPlayed = true;
     }, 500);
@@ -415,10 +446,17 @@ watch(
 
 onMounted(() => {
   uiStore.init()
+  // If the intro hasn't finished within 12s, force it to complete so the
+  // site is always reachable, even on a device that can't run the animation.
+  watchdogId = window.setTimeout(forceComplete, 12000)
   setup()
 })
 
 onBeforeUnmount(() => {
+  if (watchdogId !== undefined) {
+    clearTimeout(watchdogId)
+    watchdogId = undefined
+  }
   restoreTrigger?.kill()
   restoreTrigger = null
   introTimeline?.kill()
