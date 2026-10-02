@@ -70,6 +70,11 @@ const year = new Date().getFullYear()
           </div>
 
             <IconBar class="footer-icons" />
+
+            <span class="footer-developed">
+              Developed by
+              <a href="https://graywebsolutions.com" target="_blank" rel="noopener">Gray Solutions</a>
+            </span>
         </div>
 
       </div>
@@ -167,7 +172,26 @@ const year = new Date().getFullYear()
 /* Iconbar */
 
 .footer-icons {
-    margin-top: 1.5rem;
+    margin-top: 0.35rem;
+}
+
+/* Developed-by credit: sits under the socials in the space freed
+   above — the footer keeps its height. */
+.footer-developed {
+    margin-top: 0.4rem;
+    font-size: 0.72rem;
+    color: #777b76;
+}
+.footer-developed a {
+    display: inline;
+    margin-bottom: 0;
+    color: #a9aca7;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.footer-developed a:hover {
+    color: #718d78;
+    transform: none;
 }
 
 /* Navigation / Contact */
