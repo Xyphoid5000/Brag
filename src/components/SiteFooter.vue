@@ -16,7 +16,7 @@ const year = new Date().getFullYear()
 </script>
 
 <template>
-  <footer class="site-footer" :class="{ 'mobile': store.isMobile }"">
+  <footer class="site-footer" :class="{ 'mobile': store.isMobile }">
     <div class="footer-container">
 
       <!-- Main Footer -->
