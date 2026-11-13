@@ -99,7 +99,9 @@ const year = new Date().getFullYear()
   position: relative;
   color: #f2f1eb;
   overflow: hidden;
-  background-color: #0202026b;
+  background-color: #020202a3;
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(181,193,202,.2);
   
     &.mobile {
         min-height: 100vh;
