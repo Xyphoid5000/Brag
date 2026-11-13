@@ -6,7 +6,6 @@ $green: #586128;
 $silver: #8E9399;
 $charcoal: #172434;
 $white: #C8CCD1;
-$display: 'Cinzel', 'Trebuchet MS', serif;
 $sans: 'Inter', 'Segoe UI', 'Trebuchet MS', sans-serif;
 $green-text: #8f9a58;
 
@@ -230,21 +229,6 @@ $spacers: (
   height: 1rem;
   flex-shrink: 0;
 }
-
-/* Display type keeps the engraved Cinzel voice; body copy, labels, and form
-   text use the legible sans. Late in the file so it wins ties with rules
-   that set `font: inherit`. */
-h1, h2, h3, .eyebrow, .glass-scene__hint, .landing-nav__links a, .landing-nav__phone,
-.landing-nav__mobile a, .button, .replay-button, .hero-panel__signal, .service-number,
-.detail-card__number, .detail-card strong, .gallery-card figcaption span,
-.gallery-card figcaption strong, .before-after-card figcaption span,
-.before-after-card figcaption strong, .before-after-card__state,
-.before-after-card__toggle, .proof-band__stat strong, .proof-band__stat span,
-.detail-hero__stat strong, .detail-hero__stat span, .contact-band__phone,
-.contact-socials a, .social-button, .landing-footer {
-  font-family: $display;
-}
-.contact-socials span { font-family: $sans; }
 
 /* Contact form: honeypot (bots fill it, humans never see it) + error state */
 .contact-form .hp-field {
