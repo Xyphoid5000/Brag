@@ -25,8 +25,11 @@
       </section>
 
       <section id="why-us" class="proof-band">
-        <p class="eyebrow"><span></span> Built around your day</p>
-        <div><h2>Good glass work should disappear.</h2><p>Except for the peace of mind it leaves behind. Local hands, honest answers, and a clean finish every time.</p></div>
+        <div>
+          <p class="eyebrow"><span></span> Built around your day</p>
+          <h2>Good glass work should disappear.</h2>
+          <p>Except for the peace of mind it leaves behind. Local hands, honest answers, and a clean finish every time.</p>
+        </div>
         <div class="proof-band__stat"><strong>Local</strong><span>service that comes to you</span></div>
       </section>
 

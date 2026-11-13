@@ -59,9 +59,9 @@ const year = new Date().getFullYear()
             <span>(330) 348-1455</span>
           </a>
 
-          <a href="mailto:burningriverautoglass@gmail.com">
+          <a href="mailto:ian@burningriverautoglass.com">
             <span class="contact-label">Email</span>
-            <span>burningriverautoglass@gmail.com</span>
+            <span>ian@burningriverautoglass.com</span>
           </a>
 
           <div class="contact-location">
@@ -99,7 +99,9 @@ const year = new Date().getFullYear()
   position: relative;
   color: #f2f1eb;
   overflow: hidden;
-  background-color: #0202026b;
+  background-color: #020202a3;
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(181,193,202,.2);
   
     &.mobile {
         min-height: 100vh;
