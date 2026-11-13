@@ -10,7 +10,7 @@
       </section>
       <section class="gallery-grid" aria-label="Burning River Auto Glass gallery">
         <figure class="gallery-card gallery-card--wide">
-          <img loading="lazy" decoding="async" src="../assets/on_the_road.webp" alt="Burning River Auto Glass van on the road" />
+          <img loading="lazy" decoding="async" src="../assets/on_the_road.webp" alt="New Burning River Auto Glass van behind a freshly serviced SUV" />
           <figcaption><span>01</span><strong>Back on the road</strong><small>Mobile service, wherever the day finds you.</small></figcaption>
         </figure>
         <figure class="gallery-card">
