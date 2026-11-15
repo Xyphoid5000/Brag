@@ -23,7 +23,7 @@
         <RouterLink to="/contact">Contact</RouterLink>
       </nav>
       <div v-if="uiStore.isDesktop" class="landing-extras" style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem;">
-        <a class="landing-nav__phone" href="tel:3303481455"><span>24/7</span> (330) 348-1455</a>
+        <a class="landing-nav__phone" href="tel:3303481455">(330) 348-1455</a>
         <button style="height: 2rem;" class="replay-button" type="button" @click="replayImpact">Replay impact</button>
       </div>
     </template>  
