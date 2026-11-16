@@ -73,7 +73,7 @@ const year = new Date().getFullYear()
 
             <span class="footer-developed">
               Developed by
-              <a href="https://graywebsolutions.com" target="_blank" rel="noopener">Gray Solutions</a>
+              <a href="https://graywebsolutions.com" target="_blank" rel="noopener">Gray Web Solutions</a>
             </span>
         </div>
 
